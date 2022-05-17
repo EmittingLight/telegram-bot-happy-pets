@@ -29,6 +29,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
             // Process your updates here
+            //проверка связи
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
