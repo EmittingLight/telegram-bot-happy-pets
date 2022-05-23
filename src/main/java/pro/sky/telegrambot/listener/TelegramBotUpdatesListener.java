@@ -58,6 +58,23 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         logger.info("Клавиатура создана");
         return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
+    private SendResponse getMenu(Update update){
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
+        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
+        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
+        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
+        button1.callbackData("инфа");
+        button2.callbackData("взять");
+        button3.callbackData("отчет");
+        button4.callbackData("волонтер");
+        keyboardMarkup.addRow(button1);
+        keyboardMarkup.addRow(button2);
+        keyboardMarkup.addRow(button3);
+        keyboardMarkup.addRow(button4);
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
+
+    }
 
     /**
      *  возвращает клавиатуру
