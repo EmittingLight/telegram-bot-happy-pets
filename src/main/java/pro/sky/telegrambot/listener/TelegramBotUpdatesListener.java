@@ -31,6 +31,13 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         telegramBot.setUpdatesListener(this);
     }
 
+
+    /**
+     * метод опрашиваюший сервер и возвращает updates
+     * в зависимости от полученного updates вызывает метод getButtons{@link TelegramBotUpdatesListener#getButtons}
+     * @param updates
+     * @return
+     */
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
@@ -48,6 +55,13 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
+
+    /**
+     * метод устанавливающий кнопки inline клавиатуры
+     * принимает параметр message
+     * @param message
+     * @return отправляет сообщение
+     */
     private SendResponse getButtons(Message message){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
@@ -60,9 +74,9 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
     }
 
     /**
-     *  возвращает клавиатуру
+     * метод возвращает первичную клавиатуру с кнопками
      * @param update
-     * @return
+     * @return результат метода отправка пользователю сообщения для дальнейшего диалога
      */
     private SendResponse getMenu(Update update){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
@@ -86,6 +100,8 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
     public void onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update update) {
 
     }
+
+
 
     @Override
     public String getBotUsername() {
