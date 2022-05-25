@@ -2,12 +2,12 @@ package pro.sky.telegrambot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+
+import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import javax.annotation.PostConstruct;
+
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
@@ -43,28 +43,14 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
             Message message = update.message();
-            if(message!=null && message.text().equals(new String("/start"))){
+            if(message.text() != null && message.text().equals("/start")){
                 getButtons(message);
-            }else{
-                String data = update.callbackQuery().data();
-                if(Objects.equals(data, "коты")){
-                    getMenu(update);
-                }
-                if(Objects.equals(data, "инфа")) {
-                    catsOwnerService.stepOne(update);
-                }else{
-                    if(Objects.equals(data, "псы")){
-                        getMenu(update);
-                    }
-                    if(Objects.equals(data, "инфа")) {
-                        dogsOwnerService.stepOne(update);
-                    }
-                }
+
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
-    private SendResponse getButtons(Message message){
+    private void getButtons(Message message){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
         InlineKeyboardButton buttonDogs = new InlineKeyboardButton("\uD83D\uDC36Собаки");
@@ -72,24 +58,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         buttonDogs.callbackData("собаки");
         keyboardMarkup.addRow(buttonCats,buttonDogs);
         logger.info("Клавиатура создана");
-        return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
-    }
-    private SendResponse getMenu(Update update){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("инфа");
-        button2.callbackData("взять");
-        button3.callbackData("отчет");
-        button4.callbackData("волонтер");
-        keyboardMarkup.addRow(button1);
-        keyboardMarkup.addRow(button2);
-        keyboardMarkup.addRow(button3);
-        keyboardMarkup.addRow(button4);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
-
+        telegramBot.execute(new SendMessage(message.chat().id(), "Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
 
     @Override
