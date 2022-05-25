@@ -47,18 +47,26 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 getButtons(message);
             }else{
                 String data = update.callbackQuery().data();
-                if(Objects.equals(data, "коты")){
-                    getMenu(update);
+                switch (data){
+                    case ("коты"):
+                        catsOwnerService.getMenu(update);
+                        break;
+                    case ("инфа1"):
+                        catsOwnerService.stepOne(update);
+                        break;
+                    default:
+                        break;
                 }
-                if(Objects.equals(data, "инфа")) {
-                    catsOwnerService.stepOne(update);
-                }else{
-                    if(Objects.equals(data, "псы")){
-                        getMenu(update);
-                    }
-                    if(Objects.equals(data, "инфа")) {
+                String data2 = update.callbackQuery().data();
+                switch (data2){
+                    case ("псы"):
+                        dogsOwnerService.getMenu(update);
+                        break;
+                    case ("инфа2"):
                         dogsOwnerService.stepOne(update);
-                    }
+                        break;
+                    default:
+                        break;
                 }
             }
         });
@@ -74,24 +82,6 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         logger.info("Клавиатура создана");
         return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
-    private SendResponse getMenu(Update update){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("инфа");
-        button2.callbackData("взять");
-        button3.callbackData("отчет");
-        button4.callbackData("волонтер");
-        keyboardMarkup.addRow(button1);
-        keyboardMarkup.addRow(button2);
-        keyboardMarkup.addRow(button3);
-        keyboardMarkup.addRow(button4);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
-
-    }
-
     @Override
     public void onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update update) {
 
