@@ -31,6 +31,13 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         telegramBot.setUpdatesListener(this);
     }
 
+    private final CatsOwnerService catsOwnerService;
+    private final DogsOwnerService dogsOwnerService;
+    public TelegramBotUpdatesListener(CatsOwnerService catsOwnerService,DogsOwnerService dogsOwnerService){
+        this.catsOwnerService=catsOwnerService;
+        this.dogsOwnerService=dogsOwnerService;
+    }
+
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
@@ -38,6 +45,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             Message message = update.message();
             if(message.text() != null && message.text().equals("/start")){
                 getButtons(message);
+
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
