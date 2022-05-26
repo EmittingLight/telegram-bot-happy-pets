@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,4 +59,7 @@ public class CatsOwnerService implements CatsDogsInterface{
         keyboardForStepOne.addRow(button5);
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Добро пожаловать в приют для кошек! Что будем делать?").replyMarkup(keyboardForStepOne));
     }
+   // public SendPhoto sendPhoto(Update update){
+     //   SendPhoto sendPhoto = new SendPhoto(update.callbackQuery().message().chat().id(), )
+    //}
 }
