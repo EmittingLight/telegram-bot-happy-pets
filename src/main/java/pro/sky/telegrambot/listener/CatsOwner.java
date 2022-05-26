@@ -1,9 +1,10 @@
 package pro.sky.telegrambot.listener;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
-
+@Entity
 public class CatsOwner {
     private String ownerName;
     private int phoneNumber;
