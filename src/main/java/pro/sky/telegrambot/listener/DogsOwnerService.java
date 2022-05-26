@@ -19,25 +19,6 @@ public class DogsOwnerService implements CatsDogsInterface{
         this.dogsRepository=dogsRepository;
         this.telegramBot=telegramBot;
     }
-
-    @Override
-    public SendResponse getMenu(Update update){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("инфа2");
-        button2.callbackData("взять2");
-        button3.callbackData("отчет2");
-        button4.callbackData("волонтер2");
-        keyboardMarkup.addRow(button1);
-        keyboardMarkup.addRow(button2);
-        keyboardMarkup.addRow(button3);
-        keyboardMarkup.addRow(button4);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
-
-    }
     @Override
     public SendResponse stepOne(Update update){
         InlineKeyboardMarkup keyboardForStepOne = new InlineKeyboardMarkup();
@@ -46,16 +27,16 @@ public class DogsOwnerService implements CatsDogsInterface{
         InlineKeyboardButton button3 = new InlineKeyboardButton("Техника безопасности");
         InlineKeyboardButton button4 = new InlineKeyboardButton("Отправить свой контакт");
         InlineKeyboardButton button5 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("расписание2");
-        button2.callbackData("авто2");
-        button3.callbackData("тб2");
-        button4.callbackData("сохранение2");
-        button5.callbackData("волонтер2");
+        button1.callbackData("расписание");
+        button2.callbackData("авто");
+        button3.callbackData("тб");
+        button4.callbackData("сохранение");
+        button5.callbackData("волонтер");
         keyboardForStepOne.addRow(button1);
         keyboardForStepOne.addRow(button2);
         keyboardForStepOne.addRow(button3);
         keyboardForStepOne.addRow(button4);
         keyboardForStepOne.addRow(button5);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Добро пожаловать в приют для собак! Что будем делать?").replyMarkup(keyboardForStepOne));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Что будем делать?").replyMarkup(keyboardForStepOne));
     }
 }
