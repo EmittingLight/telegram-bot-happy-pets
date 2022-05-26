@@ -39,25 +39,25 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
     }
 
     @Override
-    public int process(List<Update> updates) {
-        updates.forEach(update -> {
-            logger.info("Processing update: {}", update);
-            Message message = update.message();
-            if(message!=null && message.text().equals(new String("/start"))){
-                getButtons(message);
-            }else{
-                String data = update.callbackQuery().data();
-                if(Objects.equals(data, "коты")){
-                    catsOwnerService.getMenu(update);
-                }
-                if(Objects.equals(data, "инфа1")) {
-                    catsOwnerService.stepOne(update);
-                }else{
-                    if(Objects.equals(data, "псы")){
-                        dogsOwnerService.getMenu(update);
-                    }
-                    if(Objects.equals(data, "инфа2")) {
-                        dogsOwnerService.stepOne(update);
+     public int process(List<Update> updates) {
+         updates.forEach(update -> {
+             logger.info("Processing update: {}", update);
+             Message message = update.message();
+             if(message!=null && message.text().equals(new String("/start"))){
+                 getButtons(message);
+             }else{
+                 String data = update.callbackQuery().data();
+                 if(Objects.equals(data, "коты")){
+                     catsOwnerService.getMenu(update);
+                 }
+                 if(Objects.equals(data, "инфа1")) {
+                     catsOwnerService.stepOne(update);
+                 }else{
+                     if(Objects.equals(data, "псы")){
+                         dogsOwnerService.getMenu(update);
+                     }
+                     if(Objects.equals(data, "инфа2")) {
+                         dogsOwnerService.stepOne(update);
                     }
                 }
             }

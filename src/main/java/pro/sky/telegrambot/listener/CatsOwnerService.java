@@ -22,23 +22,23 @@ public class CatsOwnerService implements CatsDogsInterface{
     }
 
     @Override
-    public SendResponse getMenu(Update update){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("инфа1");
-        button2.callbackData("взять1");
-        button3.callbackData("отчет1");
-        button4.callbackData("волонтер1");
-        keyboardMarkup.addRow(button1);
-        keyboardMarkup.addRow(button2);
-        keyboardMarkup.addRow(button3);
-        keyboardMarkup.addRow(button4);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
+     public SendResponse getMenu(Update update){
+         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+         InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
+         InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
+         InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
+         InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
+         button1.callbackData("инфа1");
+         button2.callbackData("взять1");
+         button3.callbackData("отчет1");
+         button4.callbackData("волонтер1");
+         keyboardMarkup.addRow(button1);
+         keyboardMarkup.addRow(button2);
+         keyboardMarkup.addRow(button3);
+         keyboardMarkup.addRow(button4);
+         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
 
-    }
+     }
     @Override
     public SendResponse stepOne(Update update){
         InlineKeyboardMarkup keyboardForStepOne = new InlineKeyboardMarkup();
