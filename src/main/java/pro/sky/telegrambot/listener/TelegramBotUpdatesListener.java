@@ -39,25 +39,25 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
     }
 
     @Override
-    public int process(List<Update> updates) {
-        updates.forEach(update -> {
-            logger.info("Processing update: {}", update);
-            Message message = update.message();
-            if(message!=null && message.text().equals(new String("/start"))){
-                getButtons(message);
-            }else{
-                String data = update.callbackQuery().data();
-                if(Objects.equals(data, "коты")){
-                    getMenu(update);
-                }
-                if(Objects.equals(data, "инфа")) {
-                    catsOwnerService.stepOne(update);
-                }else{
-                    if(Objects.equals(data, "псы")){
-                        getMenu(update);
-                    }
-                    if(Objects.equals(data, "инфа")) {
-                        dogsOwnerService.stepOne(update);
+     public int process(List<Update> updates) {
+         updates.forEach(update -> {
+             logger.info("Processing update: {}", update);
+             Message message = update.message();
+             if(message!=null && message.text().equals(new String("/start"))){
+                 getButtons(message);
+             }else{
+                 String data = update.callbackQuery().data();
+                 if(Objects.equals(data, "коты")){
+                     catsOwnerService.getMenu(update);
+                 }
+                 if(Objects.equals(data, "инфа1")) {
+                     catsOwnerService.stepOne(update);
+                 }else{
+                     if(Objects.equals(data, "псы")){
+                         dogsOwnerService.getMenu(update);
+                     }
+                     if(Objects.equals(data, "инфа2")) {
+                         dogsOwnerService.stepOne(update);
                     }
                 }
             }
@@ -73,23 +73,6 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         keyboardMarkup.addRow(buttonCats,buttonDogs);
         logger.info("Клавиатура создана");
         return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
-    }
-    private SendResponse getMenu(Update update){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("инфа");
-        button2.callbackData("взять");
-        button3.callbackData("отчет");
-        button4.callbackData("волонтер");
-        keyboardMarkup.addRow(button1);
-        keyboardMarkup.addRow(button2);
-        keyboardMarkup.addRow(button3);
-        keyboardMarkup.addRow(button4);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
-
     }
 
     @Override
