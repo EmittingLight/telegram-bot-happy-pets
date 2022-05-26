@@ -31,13 +31,13 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         telegramBot.setUpdatesListener(this);
     }
 
+    private final CatsOwnerService catsOwnerService;
+    private final DogsOwnerService dogsOwnerService;
+    public TelegramBotUpdatesListener(CatsOwnerService catsOwnerService,DogsOwnerService dogsOwnerService){
+        this.catsOwnerService=catsOwnerService;
+        this.dogsOwnerService=dogsOwnerService;
+    }
 
-    /**
-     * метод опрашиваюший сервер и возвращает updates
-     * в зависимости от полученного updates вызывает метод getButtons{@link TelegramBotUpdatesListener#getButtons}
-     * @param updates
-     * @return
-     */
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
@@ -47,21 +47,31 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 getButtons(message);
             }else{
                 String data = update.callbackQuery().data();
-                long chatId = update.callbackQuery().message().chat().id();
-                if(Objects.equals(data, "коты")||Objects.equals(data, "псы")){
-                    getMenu(update);
+                switch(data){
+                    case("коты"):
+                        catsOwnerService.getMenu(update);
+                        break;
+                    case("инфа0"):
+                        catsOwnerService.stepOne(update);
+                        break;
+                    default:
+                        break;
+                }
+                String data2 = update.callbackQuery().data();
+                switch(data2){
+                    case("псы"):
+                        dogsOwnerService.getMenu(update);
+                        break;
+                    case("инфа1"):
+                        dogsOwnerService.stepOne(update);
+                        break;
+                    default:
+                        break;
                 }
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
-
-    /**
-     * метод устанавливающий кнопки inline клавиатуры
-     * принимает параметр message
-     * @param message
-     * @return отправляет сообщение
-     */
     private SendResponse getButtons(Message message){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
@@ -73,35 +83,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
 
-    /**
-     * метод возвращает первичную клавиатуру с кнопками
-     * @param update
-     * @return результат метода отправка пользователю сообщения для дальнейшего диалога
-     */
-    private SendResponse getMenu(Update update){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("инфа");
-        button2.callbackData("взять");
-        button3.callbackData("отчет");
-        button4.callbackData("волонтер");
-        keyboardMarkup.addRow(button1);
-        keyboardMarkup.addRow(button2);
-        keyboardMarkup.addRow(button3);
-        keyboardMarkup.addRow(button4);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
-
-    }
-
     @Override
     public void onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update update) {
 
     }
-
-
 
     @Override
     public String getBotUsername() {
