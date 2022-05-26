@@ -21,7 +21,7 @@ import java.util.Objects;
 @Service
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
 
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     @Autowired
     private TelegramBot telegramBot;
@@ -77,7 +77,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
         InlineKeyboardButton buttonDogs = new InlineKeyboardButton("\uD83D\uDC36Собаки");
         buttonCats.callbackData("коты");
-        buttonDogs.callbackData("собаки");
+        buttonDogs.callbackData("псы");
         keyboardMarkup.addRow(buttonCats,buttonDogs);
         logger.info("Клавиатура создана");
         return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
