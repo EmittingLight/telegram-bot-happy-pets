@@ -21,7 +21,7 @@ import java.util.Objects;
 @Service
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
 
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     @Autowired
     private TelegramBot telegramBot;
@@ -45,7 +45,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             Message message = update.message();
             if(message!=null && message.text().equals(new String("/start"))){
                 getButtons(message);
-            }else{
+            }else if(update.callbackQuery()!=null){
                 String data = update.callbackQuery().data();
                 switch(data){
                     case("коты"):
@@ -53,6 +53,22 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                         break;
                     case("инфа0"):
                         catsOwnerService.stepOne(update);
+                        break;
+                    case("расписание0"):
+                        catsOwnerService.sendAddress(update);
+                        break;
+                    case ("авто0"):
+                        catsOwnerService.autoPass(update);
+                        break;
+                    case ("тб0"):
+                        catsOwnerService.beSafe(update);
+                        break;
+                    case ("сохранение0"):
+                        catsOwnerService.giveMeYourName(update);
+
+                        break;
+                    case ("волонтер0"):
+                        catsOwnerService.volunteer(update);
                         break;
                     default:
                         break;
@@ -65,19 +81,39 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                     case("инфа1"):
                         dogsOwnerService.stepOne(update);
                         break;
+                    case("расписание1"):
+                        dogsOwnerService.sendAddress(update);
+                        break;
+                    case ("авто1"):
+                        dogsOwnerService.autoPass(update);
+                        break;
+                    case ("тб1"):
+                        dogsOwnerService.beSafe(update);
+                        break;
+                    case ("сохранение1"):
+                        dogsOwnerService.giveMeYourName(update);
+                        break;
+                    case ("волонтер1"):
+                        dogsOwnerService.volunteer(update);
+                        break;
+
                     default:
                         break;
                 }
+            }else{
+                catsOwnerService.saveUser(message);
+                dogsOwnerService.saveUser(message);
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
+
     private SendResponse getButtons(Message message){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
         InlineKeyboardButton buttonDogs = new InlineKeyboardButton("\uD83D\uDC36Собаки");
         buttonCats.callbackData("коты");
-        buttonDogs.callbackData("собаки");
+        buttonDogs.callbackData("псы");
         keyboardMarkup.addRow(buttonCats,buttonDogs);
         logger.info("Клавиатура создана");
         return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
