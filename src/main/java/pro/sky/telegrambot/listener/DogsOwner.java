@@ -6,29 +6,27 @@ import javax.persistence.Id;
 import java.util.Objects;
 @Entity
 public class DogsOwner {
-    private String ownerName;
-    private int phoneNumber;
+    private String dogsOwnerName;
     private Long chatId;
 
     @Id
     @GeneratedValue
     private Long id;
-    public DogsOwner(){}
+
+    public DogsOwner() {
+
+    }
+    public DogsOwner( Long chatId, String dogsOwnerName) {
+        this.dogsOwnerName = dogsOwnerName;
+        this.chatId = chatId;
+    }
 
     public String getOwnerName() {
-        return ownerName;
+        return dogsOwnerName;
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
-    public int getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(int phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setOwnerName(String dogsOwnerName) {
+        this.dogsOwnerName = dogsOwnerName;
     }
 
     public Long getChatId() {
@@ -52,19 +50,18 @@ public class DogsOwner {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DogsOwner dogsOwner = (DogsOwner) o;
-        return phoneNumber == dogsOwner.phoneNumber && Objects.equals(ownerName, dogsOwner.ownerName) && Objects.equals(chatId, dogsOwner.chatId) && Objects.equals(id, dogsOwner.id);
+        return Objects.equals(dogsOwnerName, dogsOwner.dogsOwnerName) && Objects.equals(chatId, dogsOwner.chatId) && Objects.equals(id, dogsOwner.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ownerName, phoneNumber, chatId, id);
+        return Objects.hash(dogsOwnerName, chatId, id);
     }
 
     @Override
     public String toString() {
-        return "CatsOwner{" +
-                "ownerName='" + ownerName + '\'' +
-                ", phoneNumber=" + phoneNumber +
+        return "DogsOwner{" +
+                "ownerName='" + dogsOwnerName + '\'' +
                 ", chatId=" + chatId +
                 ", id=" + id +
                 '}';
