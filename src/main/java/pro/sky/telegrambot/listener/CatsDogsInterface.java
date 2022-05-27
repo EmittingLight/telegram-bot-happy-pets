@@ -13,4 +13,9 @@ public interface CatsDogsInterface {
     SendResponse giveMeYourName (Update update);
     void saveUser(Message message);
     SendResponse volunteer(Update update);
+    SendResponse stepTwo(Update update);
+    public SendResponse docs(Update update);
+    public SendResponse transport(Update update);
+    public SendResponse home(Update update);
+    SendResponse refusal(Update update);
 }
