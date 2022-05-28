@@ -68,6 +68,30 @@ public class CatsOwnerService implements CatsDogsInterface{
 
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Добро пожаловать в кошачий приют!Что будем делать?").replyMarkup(keyboardMarkupForStepOne));
     }
+    @Override
+    public SendResponse stepTwo(Update update) {
+        InlineKeyboardMarkup keyboardMarkupForStepTwo = new InlineKeyboardMarkup();
+        InlineKeyboardButton button1 = new InlineKeyboardButton("Список необходимых документов");
+        InlineKeyboardButton button2 = new InlineKeyboardButton("Рекомендации по транспортировке");
+        InlineKeyboardButton button3 = new InlineKeyboardButton("Обустройство дома для питомца");
+        InlineKeyboardButton button4 = new InlineKeyboardButton("Причины отказа");
+        InlineKeyboardButton button5 = new InlineKeyboardButton("Отправить контактные данные");
+        InlineKeyboardButton button6 = new InlineKeyboardButton("Позвать волонтера");
+        button1.callbackData("документы0");
+        button2.callbackData("транспортировка0");
+        button3.callbackData("обустройство0");
+        button4.callbackData("отказ0");
+        button5.callbackData("сохранение0");
+        button6.callbackData("волонтер0");
+        keyboardMarkupForStepTwo.addRow(button1);
+        keyboardMarkupForStepTwo.addRow(button2);
+        keyboardMarkupForStepTwo.addRow(button3);
+        keyboardMarkupForStepTwo.addRow(button4);
+        keyboardMarkupForStepTwo.addRow(button5);
+        keyboardMarkupForStepTwo.addRow(button6);
+
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Привет! Здорово, что Вы решили завести нового друга! Прежде чем взять питомца к себе, рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте. А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
+    }
 
     @Override
     public SendResponse sendAddress(Update update) {
@@ -105,5 +129,21 @@ public class CatsOwnerService implements CatsDogsInterface{
     @Override
     public SendResponse volunteer(Update update) {
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Ожидайте, Вам ответит освободившийся волонтер"));
+    }
+    @Override
+    public SendResponse docs(Update update) {
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Для того, чтобы взять котенка, просим предоставить следующие документы: справка с места работы, отсутствие вирусных инфекций в будущем доме."));
+    }
+    @Override
+    public SendResponse transport(Update update) {
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Когда будете забирать котенка, наличие переноски для кошек обязательно! Если Вы на своем авто, то ОБЯЗАТЕЛЬНО пристегните переноску ремнем безопасности."));
+    }
+    @Override
+    public SendResponse home(Update update) {
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "В первый день не берите котенка на руки, пусть он сам осмотрит новый дом! Поставьте лоток и миску и покажите котенку, где будуд проходить кормления и туалет. Если кот уже взрослый, следите, чтобы другие питомцы в доме не причинили ему вреда, защищая свою территорию. Кот с ограниченными возможностями нуждается в большем внимании, постарайтесь быть рядом в первое время."));
+    }
+    @Override
+    public SendResponse refusal(Update update) {
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Мы вправе отказать Вам в усыновлении питомца при отсутствии необходимых документов и неадекватном поведении в отношении к животному"));
     }
 }
