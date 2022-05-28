@@ -11,19 +11,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class DogsOwnerService implements CatsDogsInterface{
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     private final DogsRepository dogsRepository;
 
     public DogsOwnerService(DogsRepository dogsRepository, TelegramBot telegramBot) {
         this.dogsRepository = dogsRepository;
         this.telegramBot=telegramBot;}
-    private TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
 
     @Override
     public SendResponse getMenu(Update update) {
@@ -152,5 +153,23 @@ public class DogsOwnerService implements CatsDogsInterface{
     }
     public SendResponse cynologistList(Update update) {
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Позвоните нам по номеру 8******* и мы подберем для Вас проверенного кинолога"));
+    }
+    public DogsOwner createDogsOwner(DogsOwner dogsOwner) {
+        return dogsRepository.save(dogsOwner);
+    }
+
+    public DogsOwner findDogsOwner(Long id) {
+        return dogsRepository.findById(id).get();
+    }
+
+    public DogsOwner editDogsOwner(DogsOwner dogsOwner) {
+        return dogsRepository.save(dogsOwner);
+    }
+
+    public void deleteDogsOwner(Long id) {
+        dogsRepository.deleteById(id);
+    }
+    public Collection<DogsOwner> getAllDogsOwner() {
+        return dogsRepository.findAll();
     }
 }

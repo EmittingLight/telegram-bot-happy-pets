@@ -11,12 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class CatsOwnerService implements CatsDogsInterface{
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     private final CatsRepository catsRepository;
 
@@ -25,7 +26,7 @@ public class CatsOwnerService implements CatsDogsInterface{
         this.telegramBot = telegramBot;
     }
 
-    private TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
 
     @Override
     public SendResponse getMenu(Update update) {
@@ -66,7 +67,8 @@ public class CatsOwnerService implements CatsDogsInterface{
         keyboardMarkupForStepOne.addRow(button4);
         keyboardMarkupForStepOne.addRow(button5);
 
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Добро пожаловать в кошачий приют!Что будем делать?").replyMarkup(keyboardMarkupForStepOne));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Добро пожаловать в кошачий приют!Что будем делать?").replyMarkup(keyboardMarkupForStepOne));
     }
     @Override
     public SendResponse stepTwo(Update update) {
@@ -90,27 +92,34 @@ public class CatsOwnerService implements CatsDogsInterface{
         keyboardMarkupForStepTwo.addRow(button5);
         keyboardMarkupForStepTwo.addRow(button6);
 
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Привет! Здорово, что Вы решили завести нового друга! Прежде чем взять питомца к себе, рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте. А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Привет! Здорово, " +
+                "что Вы решили завести нового друга! Прежде чем взять питомца к себе, " +
+                "рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте. " +
+                "А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
     }
 
     @Override
     public SendResponse sendAddress(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Наш адрес ул.Котиков, дом 6"));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Наш адрес ул.Котиков, дом 6"));
     }
 
     @Override
     public SendResponse autoPass(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Чтобы получить пропуск для своего автомобиля, позвоните на пункт охраны по номеру 8*******"));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Чтобы получить пропуск для своего автомобиля, позвоните на пункт охраны по номеру 8*******"));
     }
 
     @Override
     public SendResponse beSafe(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Не тискайте котиков слишком много, иногда им это не нравится\uD83D\uDE3E"));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Не тискайте котиков слишком много, иногда им это не нравится\uD83D\uDE3E"));
     }
 
     @Override
     public SendResponse giveMeYourName(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Пожалуйста, введите свои имя, фамилию и отчество в следующем виде : Иванов Иван Иванович"));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Пожалуйста, введите свои имя, фамилию и отчество в следующем виде : Иванов Иван Иванович"));
     }
 
     public void saveUser(Message message) {
@@ -128,22 +137,53 @@ public class CatsOwnerService implements CatsDogsInterface{
     }
     @Override
     public SendResponse volunteer(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Ожидайте, Вам ответит освободившийся волонтер"));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Ожидайте, Вам ответит освободившийся волонтер"));
     }
     @Override
     public SendResponse docs(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Для того, чтобы взять котенка, просим предоставить следующие документы: справка с места работы, отсутствие вирусных инфекций в будущем доме."));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Для того, чтобы взять котенка, просим предоставить следующие документы: справка с места работы," +
+                        " отсутствие вирусных инфекций в будущем доме."));
     }
     @Override
     public SendResponse transport(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Когда будете забирать котенка, наличие переноски для кошек обязательно! Если Вы на своем авто, то ОБЯЗАТЕЛЬНО пристегните переноску ремнем безопасности."));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Когда будете забирать котенка, наличие переноски для кошек обязательно! " +
+                        "Если Вы на своем авто, то ОБЯЗАТЕЛЬНО пристегните переноску ремнем безопасности."));
     }
     @Override
     public SendResponse home(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "В первый день не берите котенка на руки, пусть он сам осмотрит новый дом! Поставьте лоток и миску и покажите котенку, где будуд проходить кормления и туалет. Если кот уже взрослый, следите, чтобы другие питомцы в доме не причинили ему вреда, защищая свою территорию. Кот с ограниченными возможностями нуждается в большем внимании, постарайтесь быть рядом в первое время."));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "В первый день не берите котенка на руки, пусть он сам осмотрит новый дом! " +
+                        "Поставьте лоток и миску и покажите котенку, где будуд проходить кормления и туалет. " +
+                        "Если кот уже взрослый, следите, чтобы другие питомцы в доме не причинили ему вреда," +
+                        " защищая свою территорию. Кот с ограниченными возможностями нуждается в большем внимании," +
+                        " постарайтесь быть рядом в первое время."));
     }
     @Override
     public SendResponse refusal(Update update) {
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Мы вправе отказать Вам в усыновлении питомца при отсутствии необходимых документов и неадекватном поведении в отношении к животному"));
+        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Мы вправе отказать Вам в усыновлении питомца при отсутствии необходимых документов" +
+                        " и неадекватном поведении в отношении к животному"));
+    }
+
+    public CatsOwner createCatsOwner(CatsOwner catsOwner) {
+        return catsRepository.save(catsOwner);
+    }
+
+    public CatsOwner findCatsOwner(Long id) {
+        return catsRepository.findById(id).get();
+    }
+
+    public CatsOwner editCatsOwner(CatsOwner catsOwner) {
+        return catsRepository.save(catsOwner);
+    }
+
+    public void deleteCatsOwner(Long id) {
+        catsRepository.deleteById(id);
+    }
+    public Collection<CatsOwner> getAllCatsOwner() {
+        return catsRepository.findAll();
     }
 }
