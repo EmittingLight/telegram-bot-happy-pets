@@ -45,33 +45,107 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             Message message = update.message();
             if(message!=null && message.text().equals(new String("/start"))){
                 getButtons(message);
+            }else if(update.callbackQuery()!=null) {
+                extracted(update);
             }else{
-                String data = update.callbackQuery().data();
-                switch(data){
-                    case("коты"):
-                        catsOwnerService.getMenu(update);
-                        break;
-                    case("инфа0"):
-                        catsOwnerService.stepOne(update);
-                        break;
-                    default:
-                        break;
-                }
-                String data2 = update.callbackQuery().data();
-                switch(data2){
-                    case("псы"):
-                        dogsOwnerService.getMenu(update);
-                        break;
-                    case("инфа1"):
-                        dogsOwnerService.stepOne(update);
-                        break;
-                    default:
-                        break;
-                }
+                catsOwnerService.saveUser(message);
+                dogsOwnerService.saveUser(message);
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
+
+    private void extracted(Update update) {
+        String data = update.callbackQuery().data();
+        switch(data){
+            case("коты"):
+                catsOwnerService.getMenu(update);
+                break;
+            case("инфа0"):
+                catsOwnerService.stepOne(update);
+                break;
+            case("расписание0"):
+                catsOwnerService.sendAddress(update);
+                break;
+            case ("авто0"):
+                catsOwnerService.autoPass(update);
+                break;
+            case ("тб0"):
+                catsOwnerService.beSafe(update);
+                break;
+            case("взять0"):
+                catsOwnerService.stepTwo(update);
+                break;
+            case("документы0"):
+                catsOwnerService.docs(update);
+                break;
+            case ("транспортировка0"):
+                catsOwnerService.transport(update);
+                break;
+            case ("обустройство0"):
+                catsOwnerService.home(update);
+                break;
+            case("отказ0"):
+                catsOwnerService.refusal(update);
+                break;
+            case("сохранение0"):
+                catsOwnerService.giveMeYourName(update);
+                break;
+            case ("волонтер0"):
+                catsOwnerService.volunteer(update);
+                break;
+            default:
+                break;
+        }
+        String data2 = update.callbackQuery().data();
+        switch(data2){
+            case("псы"):
+                dogsOwnerService.getMenu(update);
+                break;
+            case("инфа1"):
+                dogsOwnerService.stepOne(update);
+                break;
+            case("расписание1"):
+                dogsOwnerService.sendAddress(update);
+                break;
+            case ("авто1"):
+                dogsOwnerService.autoPass(update);
+                break;
+            case ("тб1"):
+                dogsOwnerService.beSafe(update);
+                break;
+            case("взять1"):
+                dogsOwnerService.stepTwo(update);
+                break;
+            case("документы1"):
+                dogsOwnerService.docs(update);
+                break;
+            case ("транспортировка1"):
+                dogsOwnerService.transport(update);
+                break;
+            case ("обустройство1"):
+                dogsOwnerService.home(update);
+                break;
+            case ("кинолог1"):
+                dogsOwnerService.cynologist(update);
+                break;
+            case ("списокКинологов1"):
+                dogsOwnerService.cynologistList(update);
+                break;
+            case("отказ1"):
+                dogsOwnerService.refusal(update);
+                break;
+            case("сохранение1"):
+                dogsOwnerService.giveMeYourName(update);
+                break;
+            case ("волонтер1"):
+                dogsOwnerService.volunteer(update);
+                break;
+            default:
+                break;
+        }
+    }
+
     private SendResponse getButtons(Message message){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
