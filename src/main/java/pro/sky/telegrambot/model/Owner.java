@@ -1,34 +1,28 @@
-package pro.sky.telegrambot.listener;
+package pro.sky.telegrambot.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
-@Entity
-public class CatsOwner {
 
-    private String catsOwnerName;
+@Entity
+public class Owner {
+    private String ownerName;
     private Long chatId;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    public CatsOwner( Long chatId, String catsOwnerName) {
-        this.catsOwnerName = catsOwnerName;
-        this.chatId = chatId;
-    }
-
-    public CatsOwner() {
-
+    public Owner() {
     }
 
     public String getOwnerName() {
-        return catsOwnerName;
+        return ownerName;
     }
 
-    public void setOwnerName(String catsOwnerName) {
-        this.catsOwnerName = catsOwnerName;
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 
     public Long getChatId() {
@@ -47,24 +41,23 @@ public class CatsOwner {
         this.id = id;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CatsOwner catsOwner = (CatsOwner) o;
-        return Objects.equals(catsOwnerName, catsOwner.catsOwnerName) && Objects.equals(chatId, catsOwner.chatId) && Objects.equals(id, catsOwner.id);
+        Owner owner = (Owner) o;
+        return Objects.equals(ownerName, owner.ownerName) && Objects.equals(chatId, owner.chatId) && Objects.equals(id, owner.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(catsOwnerName, chatId, id);
+        return Objects.hash(ownerName, chatId, id);
     }
 
     @Override
     public String toString() {
-        return "CatsOwner{" +
-                "ownerName='" + catsOwnerName + '\'' +
+        return "Owner{" +
+                "ownerName='" + ownerName + '\'' +
                 ", chatId=" + chatId +
                 ", id=" + id +
                 '}';
