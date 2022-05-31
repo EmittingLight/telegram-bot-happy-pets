@@ -13,10 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import pro.sky.telegrambot.service.CatService;
+import pro.sky.telegrambot.service.DogService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
@@ -31,11 +32,11 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         telegramBot.setUpdatesListener(this);
     }
 
-    private final CatsOwnerService catsOwnerService;
-    private final DogsOwnerService dogsOwnerService;
-    public TelegramBotUpdatesListener(CatsOwnerService catsOwnerService,DogsOwnerService dogsOwnerService){
-        this.catsOwnerService=catsOwnerService;
-        this.dogsOwnerService=dogsOwnerService;
+    private final CatService catService;
+    private final DogService dogService;
+    public TelegramBotUpdatesListener(CatService catService, DogService dogService){
+        this.catService = catService;
+        this.dogService = dogService;
     }
 
     @Override
@@ -48,8 +49,8 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             }else if(update.callbackQuery()!=null) {
                 extracted(update);
             }else{
-                catsOwnerService.saveUser(message);
-                dogsOwnerService.saveUser(message);
+                catService.saveUser(message);
+                dogService.saveUser(message);
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -59,40 +60,40 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         String data = update.callbackQuery().data();
         switch(data){
             case("коты"):
-                catsOwnerService.getMenu(update);
+                catService.getMenu(update);
                 break;
             case("инфа0"):
-                catsOwnerService.stepOne(update);
+                catService.stepOne(update);
                 break;
             case("расписание0"):
-                catsOwnerService.sendAddress(update);
+                catService.sendAddress(update);
                 break;
             case ("авто0"):
-                catsOwnerService.autoPass(update);
+                catService.autoPass(update);
                 break;
             case ("тб0"):
-                catsOwnerService.beSafe(update);
+                catService.beSafe(update);
                 break;
             case("взять0"):
-                catsOwnerService.stepTwo(update);
+                catService.stepTwo(update);
                 break;
             case("документы0"):
-                catsOwnerService.docs(update);
+                catService.docs(update);
                 break;
             case ("транспортировка0"):
-                catsOwnerService.transport(update);
+                catService.transport(update);
                 break;
             case ("обустройство0"):
-                catsOwnerService.home(update);
+                catService.home(update);
                 break;
             case("отказ0"):
-                catsOwnerService.refusal(update);
+                catService.refusal(update);
                 break;
             case("сохранение0"):
-                catsOwnerService.giveMeYourName(update);
+                catService.giveMeYourName(update);
                 break;
             case ("волонтер0"):
-                catsOwnerService.volunteer(update);
+                catService.volunteer(update);
                 break;
             default:
                 break;
@@ -100,46 +101,46 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         String data2 = update.callbackQuery().data();
         switch(data2){
             case("псы"):
-                dogsOwnerService.getMenu(update);
+                dogService.getMenu(update);
                 break;
             case("инфа1"):
-                dogsOwnerService.stepOne(update);
+                dogService.stepOne(update);
                 break;
             case("расписание1"):
-                dogsOwnerService.sendAddress(update);
+                dogService.sendAddress(update);
                 break;
             case ("авто1"):
-                dogsOwnerService.autoPass(update);
+                dogService.autoPass(update);
                 break;
             case ("тб1"):
-                dogsOwnerService.beSafe(update);
+                dogService.beSafe(update);
                 break;
             case("взять1"):
-                dogsOwnerService.stepTwo(update);
+                dogService.stepTwo(update);
                 break;
             case("документы1"):
-                dogsOwnerService.docs(update);
+                dogService.docs(update);
                 break;
             case ("транспортировка1"):
-                dogsOwnerService.transport(update);
+                dogService.transport(update);
                 break;
             case ("обустройство1"):
-                dogsOwnerService.home(update);
+                dogService.home(update);
                 break;
             case ("кинолог1"):
-                dogsOwnerService.cynologist(update);
+                dogService.cynologist(update);
                 break;
             case ("списокКинологов1"):
-                dogsOwnerService.cynologistList(update);
+                dogService.cynologistList(update);
                 break;
             case("отказ1"):
-                dogsOwnerService.refusal(update);
+                dogService.refusal(update);
                 break;
             case("сохранение1"):
-                dogsOwnerService.giveMeYourName(update);
+                dogService.giveMeYourName(update);
                 break;
             case ("волонтер1"):
-                dogsOwnerService.volunteer(update);
+                dogService.volunteer(update);
                 break;
             default:
                 break;
