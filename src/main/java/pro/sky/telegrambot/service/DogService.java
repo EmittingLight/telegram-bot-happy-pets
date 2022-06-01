@@ -33,6 +33,9 @@ public class DogService implements CatsDogsInterface {
     private final TelegramBot telegramBot;
 
     @Override
+    /**
+     * метод возвращающий  меню в ветке собачий приют
+     */
     public void getMenu(Update update) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
@@ -54,6 +57,9 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     * метод возвращающий подменю шаг 1
+     */
     public void stepOne(Update update) {
         InlineKeyboardMarkup keyboardMarkupForStepOne = new InlineKeyboardMarkup();
         InlineKeyboardButton button1 = new InlineKeyboardButton("Как нас найти?");
@@ -77,6 +83,9 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     * метод возвращающий подменю шаг 2
+     */
     public void stepTwo(Update update) {
         InlineKeyboardMarkup keyboardMarkupForStepTwo = new InlineKeyboardMarkup();
         InlineKeyboardButton button1 = new InlineKeyboardButton("Список необходимых документов");
@@ -111,18 +120,27 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     * метод возвращающий адрес приюта
+     */
     public void sendAddress(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Наш адрес ул.Песиков, дом 6"));
     }
 
     @Override
+    /**
+     * метод возвращающий сообщение с информацией о том как оформить пропуск
+     */
     public void autoPass(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Чтобы получить пропуск для своего автомобиля, позвоните на пункт охраны по номеру 8*******"));
     }
 
     @Override
+    /**
+     * метод возвращающий правила техники безопасности
+     */
     public void beSafe(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "В целях Вашей безопасности в нашем приюте запрещено дразнить собак и замахиваться на них!" +
@@ -130,12 +148,18 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     * метод запрашивающий контактные данные потенциального кандидата
+     */
     public void giveMeYourName(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Пожалуйста, введите свои имя, фамилию и отчество в следующем виде : Иванов Иван Иванович"));
     }
 
     @Override
+    /**
+     * метод сохраняет в БД юзера
+     */
     public void saveUser(Message message) {
         if (message != null) {
             Pattern pattern = Pattern.compile("([А-ЯЁ][а-яё]+[\\-\\s]?){3,}");
@@ -151,12 +175,18 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     *метод возвращающий сообщение на вызов кнопки позвать волонтера
+     */
     public void volunteer(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Ожидайте, Вам ответит освободившийся волонтер"));
     }
 
     @Override
+    /**
+     * метод возвращающий сообщение какие необходимы документы
+     */
     public void docs(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Для того, чтобы взять щенка, просим предоставить следующие документы: справка с места работы, " +
@@ -164,6 +194,9 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     * метод возвращающий сообщение с правилами транспортировки животного
+     */
     public void transport(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Когда будете забирать щенка, желательно делать это на личном автомобиле." +
@@ -171,6 +204,9 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     * метод возвращающий сообщение о правилах домашнего содержания
+     */
     public void home(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Покажите щенку его миску и игрушки. Если пес уже взрослый, следите, " +
@@ -179,18 +215,30 @@ public class DogService implements CatsDogsInterface {
     }
 
     @Override
+    /**
+     * метод возвращающий сообщение о возможном отказе в усыновлении
+     */
     public void refusal(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Мы вправе отказать Вам в усыновлении питомца при отсутствии необходимых документов" +
                         " и неадекватном поведении в отношении к животному"));
     }
 
+    /**
+     * метод возвращающий сообщение о правилах воспитания собаки
+     *
+     */
     public SendResponse cynologist(Update update) {
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Разговаривайте со своей собакой, следите за своими эмоциями,наблюдайте за выражением внутреннего" +
                         " состояния собаки и приводите его в норму, ставьте границы допустимого."));
     }
 
+    /**
+     * метод возвращающий сообщение о подборе кинолога для собаки
+     * @param update
+     * @return
+     */
     public SendResponse cynologistList(Update update) {
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Позвоните нам по номеру 8******* и мы подберем для Вас проверенного кинолога"));
