@@ -1,11 +1,11 @@
 package pro.sky.telegrambot.controller;
 
 import org.springframework.web.bind.annotation.*;
-import pro.sky.telegrambot.model.Cat;
+
 import pro.sky.telegrambot.model.Owner;
 import pro.sky.telegrambot.service.OwnerService;
 
-import java.util.Collection;
+
 import java.util.List;
 
 @RestController
