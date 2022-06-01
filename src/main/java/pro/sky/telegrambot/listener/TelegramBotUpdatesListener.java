@@ -40,6 +40,9 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
     }
 
     @Override
+    /**
+     * main метод телеграмм бота
+     */
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
@@ -56,6 +59,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
+    /**
+     * метод обработки нажатий кнопок меню в зависимости от того какая кнопка была нажата вызывается метод сервисов
+     *
+     */
     private void extracted(Update update) {
         String data = update.callbackQuery().data();
         switch(data){
@@ -147,6 +154,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         }
     }
 
+    /**
+     * метод возвращающий  кнопки первичного меню
+     *
+     */
     private SendResponse getButtons(Message message){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
