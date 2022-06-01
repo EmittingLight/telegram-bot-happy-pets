@@ -5,28 +5,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
 @Entity
-public class Dog {
-    private String dogName;
+public class UserDog {
+    private String userName;
     private Long chatId;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    public Dog() {
+    public UserDog() {
 
     }
-    public Dog(Long chatId, String dogName) {
-        this.dogName = dogName;
+    public UserDog(Long chatId, String userName) {
+        this.userName = userName;
         this.chatId = chatId;
     }
 
-    public String getDogName() {
-        return dogName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setDogName(String dogName) {
-        this.dogName = dogName;
+    public void setUserName(String dogName) {
+        this.userName = dogName;
     }
 
     public Long getChatId() {
@@ -49,19 +49,19 @@ public class Dog {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Dog dog = (Dog) o;
-        return Objects.equals(dogName, dog.dogName) && Objects.equals(chatId, dog.chatId) && Objects.equals(id, dog.id);
+        UserDog userDog = (UserDog) o;
+        return Objects.equals(userName, userDog.userName) && Objects.equals(chatId, userDog.chatId) && Objects.equals(id, userDog.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dogName, chatId, id);
+        return Objects.hash(userName, chatId, id);
     }
 
     @Override
     public String toString() {
         return "Dog{" +
-                "dogName='" + dogName + '\'' +
+                "dogName='" + userName + '\'' +
                 ", chatId=" + chatId +
                 ", id=" + id +
                 '}';

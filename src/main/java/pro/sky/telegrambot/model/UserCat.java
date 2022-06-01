@@ -5,30 +5,30 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
 @Entity
-public class Cat {
+public class UserCat {
 
-    private String catName;
+    private String userName;
     private Long chatId;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    public Cat(Long chatId, String catName) {
-        this.catName = catName;
+    public UserCat(Long chatId, String userName) {
+        this.userName = userName;
         this.chatId = chatId;
     }
 
-    public Cat() {
+    public UserCat() {
 
     }
 
-    public String getName() {
-        return catName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setCatName(String catName) {
-        this.catName = catName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Long getChatId() {
@@ -52,19 +52,19 @@ public class Cat {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Cat cat = (Cat) o;
-        return Objects.equals(catName, cat.catName) && Objects.equals(chatId, cat.chatId) && Objects.equals(id, cat.id);
+        UserCat userCat = (UserCat) o;
+        return Objects.equals(userName, userCat.userName) && Objects.equals(chatId, userCat.chatId) && Objects.equals(id, userCat.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(catName, chatId, id);
+        return Objects.hash(userName, chatId, id);
     }
 
     @Override
     public String toString() {
         return "Cat{" +
-                "catName='" + catName + '\'' +
+                "catName='" + userName + '\'' +
                 ", chatId=" + chatId +
                 ", id=" + id +
                 '}';
