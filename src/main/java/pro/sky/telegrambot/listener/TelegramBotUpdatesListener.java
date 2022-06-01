@@ -13,15 +13,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import pro.sky.telegrambot.service.CatService;
+import pro.sky.telegrambot.service.DogService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
 
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     @Autowired
     private TelegramBot telegramBot;
@@ -31,77 +32,147 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         telegramBot.setUpdatesListener(this);
     }
 
+    private final CatService catService;
+    private final DogService dogService;
+    public TelegramBotUpdatesListener(CatService catService, DogService dogService){
+        this.catService = catService;
+        this.dogService = dogService;
+    }
 
-    /**
-     * метод опрашиваюший сервер и возвращает updates
-     * в зависимости от полученного updates вызывает метод getButtons{@link TelegramBotUpdatesListener#getButtons}
-     * @param updates
-     * @return
-     */
     @Override
+    /**
+     * main метод телеграмм бота
+     */
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
             Message message = update.message();
             if(message!=null && message.text().equals(new String("/start"))){
                 getButtons(message);
+            }else if(update.callbackQuery()!=null) {
+                extracted(update);
             }else{
-                String data = update.callbackQuery().data();
-                long chatId = update.callbackQuery().message().chat().id();
-                if(Objects.equals(data, "коты")||Objects.equals(data, "псы")){
-                    getMenu(update);
-                }
+                catService.saveUser(message);
+                dogService.saveUser(message);
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
     /**
-     * метод устанавливающий кнопки inline клавиатуры
-     * принимает параметр message
-     * @param message
-     * @return отправляет сообщение
+     * метод обработки нажатий кнопок меню в зависимости от того какая кнопка была нажата вызывается метод сервисов
+     *
+     */
+    private void extracted(Update update) {
+        String data = update.callbackQuery().data();
+        switch(data){
+            case("коты"):
+                catService.getMenu(update);
+                break;
+            case("инфа0"):
+                catService.stepOne(update);
+                break;
+            case("расписание0"):
+                catService.sendAddress(update);
+                break;
+            case ("авто0"):
+                catService.autoPass(update);
+                break;
+            case ("тб0"):
+                catService.beSafe(update);
+                break;
+            case("взять0"):
+                catService.stepTwo(update);
+                break;
+            case("документы0"):
+                catService.docs(update);
+                break;
+            case ("транспортировка0"):
+                catService.transport(update);
+                break;
+            case ("обустройство0"):
+                catService.home(update);
+                break;
+            case("отказ0"):
+                catService.refusal(update);
+                break;
+            case("сохранение0"):
+                catService.giveMeYourName(update);
+                break;
+            case ("волонтер0"):
+                catService.volunteer(update);
+                break;
+            default:
+                break;
+        }
+        String data2 = update.callbackQuery().data();
+        switch(data2){
+            case("псы"):
+                dogService.getMenu(update);
+                break;
+            case("инфа1"):
+                dogService.stepOne(update);
+                break;
+            case("расписание1"):
+                dogService.sendAddress(update);
+                break;
+            case ("авто1"):
+                dogService.autoPass(update);
+                break;
+            case ("тб1"):
+                dogService.beSafe(update);
+                break;
+            case("взять1"):
+                dogService.stepTwo(update);
+                break;
+            case("документы1"):
+                dogService.docs(update);
+                break;
+            case ("транспортировка1"):
+                dogService.transport(update);
+                break;
+            case ("обустройство1"):
+                dogService.home(update);
+                break;
+            case ("кинолог1"):
+                dogService.cynologist(update);
+                break;
+            case ("списокКинологов1"):
+                dogService.cynologistList(update);
+                break;
+            case("отказ1"):
+                dogService.refusal(update);
+                break;
+            case("сохранение1"):
+                dogService.giveMeYourName(update);
+                break;
+            case ("волонтер1"):
+                dogService.volunteer(update);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * метод возвращающий  кнопки первичного меню
+     *
      */
     private SendResponse getButtons(Message message){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
         InlineKeyboardButton buttonDogs = new InlineKeyboardButton("\uD83D\uDC36Собаки");
         buttonCats.callbackData("коты");
-        buttonDogs.callbackData("собаки");
+        buttonDogs.callbackData("псы");
         keyboardMarkup.addRow(buttonCats,buttonDogs);
         logger.info("Клавиатура создана");
         return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
-    }
-
-    /**
-     * метод возвращает первичную клавиатуру с кнопками
-     * @param update
-     * @return результат метода отправка пользователю сообщения для дальнейшего диалога
-     */
-    private SendResponse getMenu(Update update){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Завести друга");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера");
-        button1.callbackData("инфа");
-        button2.callbackData("взять");
-        button3.callbackData("отчет");
-        button4.callbackData("волонтер");
-        keyboardMarkup.addRow(button1);
-        keyboardMarkup.addRow(button2);
-        keyboardMarkup.addRow(button3);
-        keyboardMarkup.addRow(button4);
-        return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),"Отлично!Чем могу помочь?").replyMarkup(keyboardMarkup));
-
     }
 
     @Override
     public void onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update update) {
 
     }
-
-
 
     @Override
     public String getBotUsername() {
