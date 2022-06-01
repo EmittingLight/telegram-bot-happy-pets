@@ -13,8 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+
 import pro.sky.telegrambot.service.UserCatService;
 import pro.sky.telegrambot.service.UserDogService;
+
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -32,11 +34,13 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         telegramBot.setUpdatesListener(this);
     }
 
+
     private final UserCatService userCatService;
     private final UserDogService userDogService;
     public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService){
         this.userCatService = userCatService;
         this.userDogService = userDogService;
+
     }
 
     @Override
@@ -52,8 +56,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             }else if(update.callbackQuery()!=null) {
                 extracted(update);
             }else{
+
                 userCatService.saveUser(message);
                 userDogService.saveUser(message);
+
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -67,6 +73,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         String data = update.callbackQuery().data();
         switch(data){
             case("коты"):
+
                 userCatService.getMenu(update);
                 break;
             case("инфа0"):
@@ -101,6 +108,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 break;
             case ("волонтер0"):
                 userCatService.volunteer(update);
+
                 break;
             default:
                 break;
@@ -108,6 +116,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         String data2 = update.callbackQuery().data();
         switch(data2){
             case("псы"):
+
                 userDogService.getMenu(update);
                 break;
             case("инфа1"):
@@ -148,6 +157,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 break;
             case ("волонтер1"):
                 userDogService.volunteer(update);
+
                 break;
             default:
                 break;
