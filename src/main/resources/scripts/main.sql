@@ -18,9 +18,15 @@ CREATE TABLE userDog
     chatId        INT,
     dogsOwnerName TEXT
 );
-CREATE TABLE owner
+CREATE TABLE catOwner
 (
     id            SERIAL PRIMARY KEY,
     chatId        INT,
     dogsOwnerName TEXT
 );
+ CREATE TABLE dogOwner
+ (
+     id            SERIAL PRIMARY KEY,
+     chatId        INT,
+     dogsOwnerName TEXT
+ );
