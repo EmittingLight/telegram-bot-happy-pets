@@ -13,8 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import pro.sky.telegrambot.service.CatService;
-import pro.sky.telegrambot.service.DogService;
+
+import pro.sky.telegrambot.service.UserCatService;
+import pro.sky.telegrambot.service.UserDogService;
+
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -32,11 +34,13 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         telegramBot.setUpdatesListener(this);
     }
 
-    private final CatService catService;
-    private final DogService dogService;
-    public TelegramBotUpdatesListener(CatService catService, DogService dogService){
-        this.catService = catService;
-        this.dogService = dogService;
+
+    private final UserCatService userCatService;
+    private final UserDogService userDogService;
+    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService){
+        this.userCatService = userCatService;
+        this.userDogService = userDogService;
+
     }
 
     @Override
@@ -52,8 +56,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             }else if(update.callbackQuery()!=null) {
                 extracted(update);
             }else{
-                catService.saveUser(message);
-                dogService.saveUser(message);
+
+                userCatService.saveUser(message);
+                userDogService.saveUser(message);
+
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -67,40 +73,42 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         String data = update.callbackQuery().data();
         switch(data){
             case("коты"):
-                catService.getMenu(update);
+
+                userCatService.getMenu(update);
                 break;
             case("инфа0"):
-                catService.stepOne(update);
+                userCatService.stepOne(update);
                 break;
             case("расписание0"):
-                catService.sendAddress(update);
+                userCatService.sendAddress(update);
                 break;
             case ("авто0"):
-                catService.autoPass(update);
+                userCatService.autoPass(update);
                 break;
             case ("тб0"):
-                catService.beSafe(update);
+                userCatService.beSafe(update);
                 break;
             case("взять0"):
-                catService.stepTwo(update);
+                userCatService.stepTwo(update);
                 break;
             case("документы0"):
-                catService.docs(update);
+                userCatService.docs(update);
                 break;
             case ("транспортировка0"):
-                catService.transport(update);
+                userCatService.transport(update);
                 break;
             case ("обустройство0"):
-                catService.home(update);
+                userCatService.home(update);
                 break;
             case("отказ0"):
-                catService.refusal(update);
+                userCatService.refusal(update);
                 break;
             case("сохранение0"):
-                catService.giveMeYourName(update);
+                userCatService.giveMeYourName(update);
                 break;
             case ("волонтер0"):
-                catService.volunteer(update);
+                userCatService.volunteer(update);
+
                 break;
             default:
                 break;
@@ -108,46 +116,48 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         String data2 = update.callbackQuery().data();
         switch(data2){
             case("псы"):
-                dogService.getMenu(update);
+
+                userDogService.getMenu(update);
                 break;
             case("инфа1"):
-                dogService.stepOne(update);
+                userDogService.stepOne(update);
                 break;
             case("расписание1"):
-                dogService.sendAddress(update);
+                userDogService.sendAddress(update);
                 break;
             case ("авто1"):
-                dogService.autoPass(update);
+                userDogService.autoPass(update);
                 break;
             case ("тб1"):
-                dogService.beSafe(update);
+                userDogService.beSafe(update);
                 break;
             case("взять1"):
-                dogService.stepTwo(update);
+                userDogService.stepTwo(update);
                 break;
             case("документы1"):
-                dogService.docs(update);
+                userDogService.docs(update);
                 break;
             case ("транспортировка1"):
-                dogService.transport(update);
+                userDogService.transport(update);
                 break;
             case ("обустройство1"):
-                dogService.home(update);
+                userDogService.home(update);
                 break;
             case ("кинолог1"):
-                dogService.cynologist(update);
+                userDogService.cynologist(update);
                 break;
             case ("списокКинологов1"):
-                dogService.cynologistList(update);
+                userDogService.cynologistList(update);
                 break;
             case("отказ1"):
-                dogService.refusal(update);
+                userDogService.refusal(update);
                 break;
             case("сохранение1"):
-                dogService.giveMeYourName(update);
+                userDogService.giveMeYourName(update);
                 break;
             case ("волонтер1"):
-                dogService.volunteer(update);
+                userDogService.volunteer(update);
+
                 break;
             default:
                 break;
