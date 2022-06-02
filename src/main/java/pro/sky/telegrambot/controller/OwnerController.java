@@ -6,11 +6,13 @@ import pro.sky.telegrambot.model.Owner;
 import pro.sky.telegrambot.service.OwnerService;
 
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("owner")
+@RequestMapping("/owner")
 public class OwnerController {
+
     private final OwnerService ownerService;
 
     public OwnerController(OwnerService ownerService) {
@@ -38,7 +40,7 @@ public class OwnerController {
     }
 
     @GetMapping
-    public List<Owner> getAllOwner() {
+    public Collection<Owner> getAllOwner() {
         return ownerService.getAllOwner();
     }
 }

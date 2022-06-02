@@ -14,6 +14,11 @@ public class Owner {
     @GeneratedValue
     private Long id;
 
+    public Owner(String ownerName, Long chatId) {
+        this.ownerName = ownerName;
+        this.chatId = chatId;
+    }
+
     public Owner() {
     }
 

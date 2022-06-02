@@ -1,9 +1,11 @@
 package pro.sky.telegrambot.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
+
 @Entity
 public class UserCat {
 
@@ -14,14 +16,15 @@ public class UserCat {
     @GeneratedValue
     private Long id;
 
+    public UserCat() {
+
+    }
+
     public UserCat(Long chatId, String userName) {
         this.userName = userName;
         this.chatId = chatId;
     }
 
-    public UserCat() {
-
-    }
 
     public String getUserName() {
         return userName;

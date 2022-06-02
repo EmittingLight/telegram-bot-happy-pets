@@ -25,8 +25,7 @@ import java.util.List;
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-
-    @Autowired
+@Autowired
     private TelegramBot telegramBot;
 
     @PostConstruct

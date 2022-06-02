@@ -9,6 +9,7 @@ import pro.sky.telegrambot.repository.OwnerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -18,13 +19,11 @@ public class OwnerService {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private final OwnerRepository ownerRepository;
 
-    private final TelegramBot telegramBot;
-
-
-    public OwnerService(OwnerRepository ownerRepository, OwnerRepository ownerRepository1, TelegramBot telegramBot) {
-        this.ownerRepository = ownerRepository1;
+    public OwnerService(OwnerRepository ownerRepository, TelegramBot telegramBot) {
+        this.ownerRepository = ownerRepository;
         this.telegramBot = telegramBot;
     }
+    private final TelegramBot telegramBot;
 
 
     public Owner createOwner(Owner owner) {
@@ -42,7 +41,7 @@ public class OwnerService {
     public void deleteOwner(Long id) {
         ownerRepository.deleteById(id);
     }
-    public List<Owner> getAllOwner() {
+    public Collection<Owner> getAllOwner() {
         return ownerRepository.findAll();
     }
 }
