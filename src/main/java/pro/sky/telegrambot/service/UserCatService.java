@@ -14,6 +14,7 @@ import pro.sky.telegrambot.repository.CatsDogsInterface;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.UserCatRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -226,7 +227,7 @@ public class UserCatService implements CatsDogsInterface {
     public void deleteUserCat(Long id) {
         userCatRepository.deleteById(id);
     }
-    public List<UserCat> getAllUsersCat() {
+    public Collection<UserCat> getAllUsersCat() {
         return userCatRepository.findAll();
     }
 }

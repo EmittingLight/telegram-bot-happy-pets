@@ -15,6 +15,7 @@ import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.model.UserDog;
 import pro.sky.telegrambot.repository.UserDogRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -226,7 +227,6 @@ public class UserDogService implements CatsDogsInterface {
 
     /**
      * метод возвращающий сообщение о правилах воспитания собаки
-     *
      */
     public SendResponse cynologist(Update update) {
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
@@ -236,6 +236,7 @@ public class UserDogService implements CatsDogsInterface {
 
     /**
      * метод возвращающий сообщение о подборе кинолога для собаки
+     *
      * @param update
      * @return
      */
@@ -260,7 +261,7 @@ public class UserDogService implements CatsDogsInterface {
         userDogRepository.deleteById(id);
     }
 
-    public List<UserDog> getAllUsersDog() {
+    public Collection<UserDog> getAllUsersDog() {
         return userDogRepository.findAll();
     }
 }

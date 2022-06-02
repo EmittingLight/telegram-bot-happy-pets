@@ -3,19 +3,15 @@ package pro.sky.telegrambot;
 
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pro.sky.telegrambot.controller.OwnerController;
 import pro.sky.telegrambot.controller.UserCatController;
-import pro.sky.telegrambot.controller.UserDogController;
 import pro.sky.telegrambot.model.Owner;
 import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.model.UserDog;
@@ -129,7 +125,7 @@ public class TelegramBotApplicationTests {
         when(ownerRepository.findById(any(Long.class))).thenReturn(Optional.of(owner));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/owner")
+                        .post("/cat-owner")
                         .content(userOwnerObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -138,5 +134,7 @@ public class TelegramBotApplicationTests {
                 .andExpect(jsonPath("$.ownerName").value(name))
                 .andExpect(jsonPath("$.id").value(id));
     }
+
+
 
 }
