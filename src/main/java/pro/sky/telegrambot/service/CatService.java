@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.repository.CatsDogsInterface;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
@@ -18,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@Component
 @Service
 public class CatService implements CatsDogsInterface {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);

@@ -7,7 +7,7 @@ import pro.sky.telegrambot.service.UserCatService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("cat-user")
+@RequestMapping("/cat-user")
 public class UserCatController {
     private final UserCatService userCatService;
 
