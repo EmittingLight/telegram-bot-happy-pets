@@ -37,7 +37,8 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
 
     private final UserCatService userCatService;
     private final UserDogService userDogService;
-    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService){
+
+    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService) {
         this.userCatService = userCatService;
         this.userDogService = userDogService;
 
@@ -51,11 +52,11 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
             Message message = update.message();
-            if(message!=null && message.text().equals(new String("/start"))){
+            if (message != null && message.text().equals(new String("/start"))) {
                 getButtons(message);
-            }else if(update.callbackQuery()!=null) {
+            } else if (update.callbackQuery() != null) {
                 extracted(update);
-            }else{
+            } else {
 
                 userCatService.saveUser(message);
                 userDogService.saveUser(message);
@@ -67,19 +68,18 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
 
     /**
      * метод обработки нажатий кнопок меню в зависимости от того какая кнопка была нажата вызывается метод сервисов
-     *
      */
     private void extracted(Update update) {
         String data = update.callbackQuery().data();
-        switch(data){
-            case("коты"):
+        switch (data) {
+            case ("коты"):
 
                 userCatService.getMenu(update);
                 break;
-            case("инфа0"):
+            case ("инфа0"):
                 userCatService.stepOne(update);
                 break;
-            case("расписание0"):
+            case ("расписание0"):
                 userCatService.sendAddress(update);
                 break;
             case ("авто0"):
@@ -88,10 +88,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("тб0"):
                 userCatService.beSafe(update);
                 break;
-            case("взять0"):
+            case ("взять0"):
                 userCatService.stepTwo(update);
                 break;
-            case("документы0"):
+            case ("документы0"):
                 userCatService.docs(update);
                 break;
             case ("транспортировка0"):
@@ -100,10 +100,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("обустройство0"):
                 userCatService.home(update);
                 break;
-            case("отказ0"):
+            case ("отказ0"):
                 userCatService.refusal(update);
                 break;
-            case("сохранение0"):
+            case ("сохранение0"):
                 userCatService.giveMeYourName(update);
                 break;
             case ("волонтер0"):
@@ -114,15 +114,15 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 break;
         }
         String data2 = update.callbackQuery().data();
-        switch(data2){
-            case("псы"):
+        switch (data2) {
+            case ("псы"):
 
                 userDogService.getMenu(update);
                 break;
-            case("инфа1"):
+            case ("инфа1"):
                 userDogService.stepOne(update);
                 break;
-            case("расписание1"):
+            case ("расписание1"):
                 userDogService.sendAddress(update);
                 break;
             case ("авто1"):
@@ -131,10 +131,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("тб1"):
                 userDogService.beSafe(update);
                 break;
-            case("взять1"):
+            case ("взять1"):
                 userDogService.stepTwo(update);
                 break;
-            case("документы1"):
+            case ("документы1"):
                 userDogService.docs(update);
                 break;
             case ("транспортировка1"):
@@ -149,10 +149,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("списокКинологов1"):
                 userDogService.cynologistList(update);
                 break;
-            case("отказ1"):
+            case ("отказ1"):
                 userDogService.refusal(update);
                 break;
-            case("сохранение1"):
+            case ("сохранение1"):
                 userDogService.giveMeYourName(update);
                 break;
             case ("волонтер1"):
@@ -166,17 +166,16 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
 
     /**
      * метод возвращающий  кнопки первичного меню
-     *
      */
-    private SendResponse getButtons(Message message){
+    private SendResponse getButtons(Message message) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
         InlineKeyboardButton buttonDogs = new InlineKeyboardButton("\uD83D\uDC36Собаки");
         buttonCats.callbackData("коты");
         buttonDogs.callbackData("псы");
-        keyboardMarkup.addRow(buttonCats,buttonDogs);
+        keyboardMarkup.addRow(buttonCats, buttonDogs);
         logger.info("Клавиатура создана");
-        return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
+        return telegramBot.execute(new SendMessage(message.chat().id(), "Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
 
     @Override

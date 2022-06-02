@@ -12,13 +12,17 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pro.sky.telegrambot.controller.OwnerController;
 import pro.sky.telegrambot.controller.UserCatController;
 import pro.sky.telegrambot.controller.UserDogController;
+import pro.sky.telegrambot.model.Owner;
 import pro.sky.telegrambot.model.UserCat;
 
 import pro.sky.telegrambot.model.UserDog;
+import pro.sky.telegrambot.repository.OwnerRepository;
 import pro.sky.telegrambot.repository.UserCatRepository;
 import pro.sky.telegrambot.repository.UserDogRepository;
+import pro.sky.telegrambot.service.OwnerService;
 import pro.sky.telegrambot.service.UserCatService;
 import pro.sky.telegrambot.service.UserDogService;
 
@@ -33,81 +37,116 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 public class TelegramBotApplicationTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private UserCatRepository userCatRepository;
+    @MockBean
+    private UserCatRepository userCatRepository;
 
-	@MockBean
-	private UserDogRepository userDogRepository;
+    @MockBean
+    private UserDogRepository userDogRepository;
 
-	@SpyBean
-	private UserCatService userCatService;
+    @MockBean
+    private OwnerRepository ownerRepository;
 
-	@SpyBean
-	private UserDogService userDogService;
+    @SpyBean
+    private OwnerService ownerService;
 
-	@InjectMocks
-	private UserCatController userCatController;
+    @SpyBean
+    private UserCatService userCatService;
 
-	@InjectMocks
-	private UserDogController userDogController;
+    @SpyBean
+    private UserDogService userDogService;
 
+    @InjectMocks
+    private UserCatController userCatController;
 
+    @InjectMocks
+    private UserDogController userDogController;
 
+    @InjectMocks
+    private OwnerController ownerController;
 
-	@Test
-	public void saveUserCatTests() throws Exception  {
-		JSONObject userCatObject = new JSONObject();
-		userCatObject.put("vasya",1);
-
-		UserCat userCat = new UserCat();
-		userCat.setId(1l);
-		userCat.setUserName("vasya");
-		userCat.setChatId(1l);
-
-		when(userCatRepository.save(any(UserCat.class))).thenReturn(userCat);
-		when(userCatRepository.findById(any(Long.class))).thenReturn(Optional.of(userCat));
-
-		mockMvc.perform(MockMvcRequestBuilders
-				.post("/cat-user")
-				.content(userCatObject.toString())
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value("id"))
-				.andExpect(jsonPath("$.username").value("username"))
-				.andExpect(jsonPath("$.chatId").value("chatId"));
-
-	}
-
-	@Test
-	public void saveUserDogTests() throws Exception  {
-		JSONObject userDogObject = new JSONObject();
-		userDogObject.put("vasya",1);
-
-		UserDog userDog = new UserDog();
-		userDog.setId(1l);
-		userDog.setUserName("vasya");
-		userDog.setChatId(1l);
-
-		when(userDogRepository.save(any(UserDog.class))).thenReturn(userDog);
-		when(userDogRepository.findById(any(Long.class))).thenReturn(Optional.of(userDog));
-
-		mockMvc.perform(MockMvcRequestBuilders
-						.post("/dog-user")
-						.content(userDogObject.toString())
-						.contentType(MediaType.APPLICATION_JSON)
-						.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value("id"))
-				.andExpect(jsonPath("$.username").value("username"))
-				.andExpect(jsonPath("$.chatId").value("chatId"));
-
-	}
+    public TelegramBotApplicationTests(UserCatController userCatController, UserDogController userDogController, OwnerController ownerController) {
+        this.userCatController = userCatController;
+        this.userDogController = userDogController;
+        this.ownerController = ownerController;
+    }
 
 
+    @Test
+    public void saveUserCatTests() throws Exception {
+        JSONObject userCatObject = new JSONObject();
+        userCatObject.put("vasya", 1);
+
+        UserCat userCat = new UserCat();
+        userCat.setId(1L);
+        userCat.setUserName("vasya");
+        userCat.setChatId(1L);
+
+        when(userCatRepository.save(any(UserCat.class))).thenReturn(userCat);
+        when(userCatRepository.findById(any(Long.class))).thenReturn(Optional.of(userCat));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/cat-user")
+                        .content(userCatObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("id"))
+                .andExpect(jsonPath("$.username").value("userName"))
+                .andExpect(jsonPath("$.chatId").value("chatId"));
+
+    }
+
+    @Test
+    public void saveUserDogTests() throws Exception {
+        JSONObject userDogObject = new JSONObject();
+        userDogObject.put("vasya", 1);
+
+        UserDog userDog = new UserDog();
+        userDog.setId(1l);
+        userDog.setUserName("vasya");
+        userDog.setChatId(1l);
+
+        when(userDogRepository.save(any(UserDog.class))).thenReturn(userDog);
+        when(userDogRepository.findById(any(Long.class))).thenReturn(Optional.of(userDog));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/dog-user")
+                        .content(userDogObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("id"))
+                .andExpect(jsonPath("$.username").value("userName"))
+                .andExpect(jsonPath("$.chatId").value("chatId"));
+
+    }
+
+    @Test
+    public void saveOwnerTests() throws Exception {
+        JSONObject ownerObject = new JSONObject();
+        ownerObject.put("vasya", 1);
+        Owner owner = new Owner();
+        owner.setId(1l);
+        owner.setOwnerName("vasya");
+        owner.setChatId(1l);
+
+        when(ownerRepository.save(any(Owner.class))).thenReturn(owner);
+        when(ownerRepository.findById(any(Long.class))).thenReturn(Optional.of(owner));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/owner")
+                        .content(ownerObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("id"))
+                .andExpect(jsonPath("$.username").value("ownerName"))
+                .andExpect(jsonPath("$.chatId").value("chatId"));
+
+    }
 
 
 }

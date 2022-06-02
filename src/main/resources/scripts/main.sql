@@ -1,4 +1,5 @@
--- liquibase formatted sql
+
+ -- liquibase formatted sql
 
 -- changeset sergei:1
 
