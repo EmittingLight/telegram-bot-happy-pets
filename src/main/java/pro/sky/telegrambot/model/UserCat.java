@@ -1,32 +1,37 @@
-package pro.sky.telegrambot.listener;
+package pro.sky.telegrambot.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
+
 @Entity
-public class DogsOwner {
-    private String dogsOwnerName;
+public class UserCat {
+
+    private String userName;
     private Long chatId;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    public DogsOwner() {
+    public UserCat() {
 
     }
-    public DogsOwner( Long chatId, String dogsOwnerName) {
-        this.dogsOwnerName = dogsOwnerName;
+
+    public UserCat(Long chatId, String userName) {
+        this.userName = userName;
         this.chatId = chatId;
     }
 
-    public String getOwnerName() {
-        return dogsOwnerName;
+
+    public String getUserName() {
+        return userName;
     }
 
-    public void setOwnerName(String dogsOwnerName) {
-        this.dogsOwnerName = dogsOwnerName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Long getChatId() {
@@ -45,23 +50,24 @@ public class DogsOwner {
         this.id = id;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DogsOwner dogsOwner = (DogsOwner) o;
-        return Objects.equals(dogsOwnerName, dogsOwner.dogsOwnerName) && Objects.equals(chatId, dogsOwner.chatId) && Objects.equals(id, dogsOwner.id);
+        UserCat userCat = (UserCat) o;
+        return Objects.equals(userName, userCat.userName) && Objects.equals(chatId, userCat.chatId) && Objects.equals(id, userCat.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dogsOwnerName, chatId, id);
+        return Objects.hash(userName, chatId, id);
     }
 
     @Override
     public String toString() {
-        return "DogsOwner{" +
-                "ownerName='" + dogsOwnerName + '\'' +
+        return "Cat{" +
+                "catName='" + userName + '\'' +
                 ", chatId=" + chatId +
                 ", id=" + id +
                 '}';

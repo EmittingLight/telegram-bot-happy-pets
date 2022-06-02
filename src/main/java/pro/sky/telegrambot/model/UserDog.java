@@ -1,34 +1,32 @@
-package pro.sky.telegrambot.listener;
+package pro.sky.telegrambot.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
 @Entity
-public class CatsOwner {
-
-    private String catsOwnerName;
+public class UserDog {
+    private String userName;
     private Long chatId;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    public CatsOwner( Long chatId, String catsOwnerName) {
-        this.catsOwnerName = catsOwnerName;
+    public UserDog() {
+
+    }
+    public UserDog(Long chatId, String userName) {
+        this.userName = userName;
         this.chatId = chatId;
     }
 
-    public CatsOwner() {
-
+    public String getUserName() {
+        return userName;
     }
 
-    public String getOwnerName() {
-        return catsOwnerName;
-    }
-
-    public void setOwnerName(String catsOwnerName) {
-        this.catsOwnerName = catsOwnerName;
+    public void setUserName(String dogName) {
+        this.userName = dogName;
     }
 
     public Long getChatId() {
@@ -47,24 +45,23 @@ public class CatsOwner {
         this.id = id;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CatsOwner catsOwner = (CatsOwner) o;
-        return Objects.equals(catsOwnerName, catsOwner.catsOwnerName) && Objects.equals(chatId, catsOwner.chatId) && Objects.equals(id, catsOwner.id);
+        UserDog userDog = (UserDog) o;
+        return Objects.equals(userName, userDog.userName) && Objects.equals(chatId, userDog.chatId) && Objects.equals(id, userDog.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(catsOwnerName, chatId, id);
+        return Objects.hash(userName, chatId, id);
     }
 
     @Override
     public String toString() {
-        return "CatsOwner{" +
-                "ownerName='" + catsOwnerName + '\'' +
+        return "Dog{" +
+                "dogName='" + userName + '\'' +
                 ", chatId=" + chatId +
                 ", id=" + id +
                 '}';
