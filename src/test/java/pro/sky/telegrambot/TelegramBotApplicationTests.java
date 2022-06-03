@@ -12,13 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.telegrambot.controller.UserCatController;
-import pro.sky.telegrambot.model.Owner;
 import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.model.UserDog;
-import pro.sky.telegrambot.repository.OwnerRepository;
 import pro.sky.telegrambot.repository.UserCatRepository;
 import pro.sky.telegrambot.repository.UserDogRepository;
-import pro.sky.telegrambot.service.OwnerService;
 import pro.sky.telegrambot.service.UserCatService;
 import pro.sky.telegrambot.service.UserDogService;
 

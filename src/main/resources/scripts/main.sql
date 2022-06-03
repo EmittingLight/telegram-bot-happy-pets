@@ -8,7 +8,8 @@ CREATE TABLE userCat
 (
     id            SERIAL PRIMARY KEY,
     chatId        INT,
-    catsOwnerName TEXT
+    catsOwnerName TEXT,
+    pet TEXT
 );
 
 CREATE TABLE userDog
@@ -16,17 +17,6 @@ CREATE TABLE userDog
 (
     id            SERIAL PRIMARY KEY,
     chatId        INT,
-    dogsOwnerName TEXT
+    dogsOwnerName TEXT,
+    pet TEXT
 );
-CREATE TABLE catOwner
-(
-    id            SERIAL PRIMARY KEY,
-    chatId        INT,
-    dogsOwnerName TEXT
-);
- CREATE TABLE dogOwner
- (
-     id            SERIAL PRIMARY KEY,
-     chatId        INT,
-     dogsOwnerName TEXT
- );

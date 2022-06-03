@@ -11,6 +11,7 @@ public class UserCat {
 
     private String userName;
     private Long chatId;
+    private String pet;
 
     @Id
     @GeneratedValue
@@ -20,9 +21,10 @@ public class UserCat {
 
     }
 
-    public UserCat(Long chatId, String userName) {
+    public UserCat(Long chatId, String userName, String pet) {
         this.userName = userName;
         this.chatId = chatId;
+        this.pet=pet;
     }
 
 
@@ -51,24 +53,33 @@ public class UserCat {
     }
 
 
+    public String getPet() {
+        return pet;
+    }
+
+    public void setPet(String pet) {
+        this.pet = pet;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserCat userCat = (UserCat) o;
-        return Objects.equals(userName, userCat.userName) && Objects.equals(chatId, userCat.chatId) && Objects.equals(id, userCat.id);
+        return Objects.equals(userName, userCat.userName) && Objects.equals(chatId, userCat.chatId) && Objects.equals(pet, userCat.pet) && Objects.equals(id, userCat.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, chatId, id);
+        return Objects.hash(userName, chatId, pet, id);
     }
 
     @Override
     public String toString() {
-        return "Cat{" +
-                "catName='" + userName + '\'' +
+        return "UserCat{" +
+                "userName='" + userName + '\'' +
                 ", chatId=" + chatId +
+                ", pet='" + pet + '\'' +
                 ", id=" + id +
                 '}';
     }

@@ -119,6 +119,10 @@ public class UserDogService implements CatsDogsInterface {
                         " рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте." +
                         " А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
     }
+    @Override
+    public void stepThree(Update update) {
+        telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+    }
 
     @Override
     /**
@@ -168,7 +172,7 @@ public class UserDogService implements CatsDogsInterface {
             logger.info("поделил");
             if (matcher.matches()) {
                 String ownerName = matcher.group();
-                UserDog object = new UserDog(message.chat().id(), ownerName);
+                UserDog object = new UserDog(message.chat().id(), ownerName, "no");
                 userDogRepository.save(object);
                 logger.info("сохранил");
             }

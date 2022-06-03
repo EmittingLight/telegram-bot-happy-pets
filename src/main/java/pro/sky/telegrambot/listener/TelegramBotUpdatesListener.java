@@ -11,9 +11,14 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
+import pro.sky.telegrambot.model.UserCat;
+import pro.sky.telegrambot.model.UserDog;
+import pro.sky.telegrambot.repository.UserCatRepository;
+import pro.sky.telegrambot.repository.UserDogRepository;
 import pro.sky.telegrambot.service.UserCatService;
 import pro.sky.telegrambot.service.UserDogService;
 
@@ -37,9 +42,14 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
     private final UserCatService userCatService;
     private final UserDogService userDogService;
 
-    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService) {
+    private final UserCatRepository userCatRepository;
+    private final UserDogRepository userDogRepository;
+
+    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService, UserCatRepository userCatRepository, UserDogRepository userDogRepository) {
         this.userCatService = userCatService;
         this.userDogService = userDogService;
+        this.userCatRepository=userCatRepository;
+        this.userDogRepository=userDogRepository;
 
     }
 
@@ -55,8 +65,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 getButtons(message);
             } else if (update.callbackQuery() != null) {
                 extracted(update);
-            } else {
-
+            }else{
                 userCatService.saveUser(message);
                 userDogService.saveUser(message);
 
@@ -107,7 +116,9 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 break;
             case ("волонтер0"):
                 userCatService.volunteer(update);
-
+                break;
+            case ("отчет0"):
+                userCatService.stepThree(update);
                 break;
             default:
                 break;
@@ -156,7 +167,9 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 break;
             case ("волонтер1"):
                 userDogService.volunteer(update);
-
+                break;
+            case ("отчет1"):
+                userDogService.stepThree(update);
                 break;
             default:
                 break;
@@ -176,6 +189,33 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         logger.info("Клавиатура создана");
         return telegramBot.execute(new SendMessage(message.chat().id(), "Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
+
+    @Scheduled(fixedDelay = 10_000L)
+    public void findOwner() {
+        List<UserCat> cats = userCatRepository.findAll();
+        List<UserDog> dogs = userDogRepository.findAll();
+        for (UserCat userCat : cats) {
+            if (userCat != null && userCat.getPet().equals("yes")) {
+                telegramBot.execute(new SendMessage(userCat.getChatId(), "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+            }
+            for (UserDog userDog : dogs) {
+                if (userDog != null && userDog.getPet().equals("yes")) {
+                    telegramBot.execute(new SendMessage(userDog.getChatId(), "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+                }
+            }
+        }
+    }
+   // public String takeReportFromOwner(Update update){
+     //       if(update.message().text() != null && update.message().photo() != null){
+       //         telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+         //   }else{
+           //    telegramBot.execute(new SendMessage(update.message().chat().id(), "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо!"));
+            //}
+       // return "Hello";
+    //}
+
+
+
 
     @Override
     public void onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update update) {
