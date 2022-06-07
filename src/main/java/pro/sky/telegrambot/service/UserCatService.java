@@ -6,16 +6,20 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import org.hibernate.type.LocalDateType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.repository.CatsDogsInterface;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.UserCatRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -162,7 +166,8 @@ public class UserCatService implements CatsDogsInterface {
             logger.info("поделил");
             if (matcher.matches()) {
                 String ownerName = matcher.group();
-                UserCat object = new UserCat(message.chat().id(), ownerName, "no");
+                LocalDate probationDate = LocalDate.now().plusDays(30);
+                UserCat object = new UserCat(message.chat().id(), ownerName, "no", probationDate);
                 userCatRepository.save(object);
                 logger.info("сохранил");
             }
