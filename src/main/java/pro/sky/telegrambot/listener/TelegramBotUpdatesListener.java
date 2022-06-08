@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-@Autowired
+    @Autowired
     private TelegramBot telegramBot;
 
     @PostConstruct
@@ -47,16 +47,15 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
     private final UserCatService userCatService;
     private final UserDogService userDogService;
 
-    private  UserCatRepository userCatRepository;
-    private  UserDogRepository userDogRepository;
-
+    private final UserCatRepository userCatRepository;
+    private final UserDogRepository userDogRepository;
 
 
     public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService, UserCatRepository userCatRepository, UserDogRepository userDogRepository) {
         this.userCatService = userCatService;
         this.userDogService = userDogService;
-        this.userCatRepository=userCatRepository;
-        this.userDogRepository=userDogRepository;
+        this.userCatRepository = userCatRepository;
+        this.userDogRepository = userDogRepository;
 
 
     }
@@ -66,26 +65,26 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
      * main метод телеграмм бота
      */
     public int process(List<Update> updates) {
-       try {
-           updates.forEach(update -> {
-               logger.info("Processing update: {}", update);
-               Message message = update.message();
-               if (message != null && message.text().equals(new String("/start"))) {
-                   getButtons(message);
-               } else if (update.callbackQuery() != null) {
-                   extracted(update);
-               } else if (message != null && message.text() != null && message.photo() != null) {
-                   telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
-               }else {
+        try {
+            updates.forEach(update -> {
+                logger.info("Processing update: {}", update);
+                Message message = update.message();
+                if (message != null && message.text().equals(new String("/start"))) {
+                    getButtons(message);
+                } else if (update.callbackQuery() != null) {
+                    extracted(update);
+                } else if (message != null && message.text() != null && message.photo() != null) {
+                    telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+                } else {
 
-                   userCatService.saveUser(message);
-                   userDogService.saveUser(message);
+                    userCatService.saveUser(message);
+                    userDogService.saveUser(message);
 
-               }
-           });
-       } catch (NullPointerException e) {
-           logger.error("НалПоинтерБесит");
-       }
+                }
+            });
+        } catch (NullPointerException e) {
+            logger.error("НалПоинтерБесит");
+        }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
@@ -205,48 +204,53 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         return telegramBot.execute(new SendMessage(message.chat().id(), "Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
 
-    @Scheduled(cron = "00 00 21 1-30 * ?")
+    @Scheduled(cron = "00 00 11 1-30 * ?")
     public void findOwner() {
         List<UserCat> cats = userCatRepository.findAll();
         List<UserDog> dogs = userDogRepository.findAll();
         for (UserCat userCat : cats) {
             if (userCat != null && userCat.getPet().equals("yes")) {
-                telegramBot.execute(new SendMessage(userCat.getChatId(), "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+                telegramBot.execute(new SendMessage(userCat.getChatId(), "Для отчета просим прислать фото животного," +
+                        " его рацион, общее самочувствие и информацию об изменении в поведении."));
             }
         }
         for (UserDog userDog : dogs) {
-                if (userDog != null && userDog.getPet().equals("yes")) {
-                    telegramBot.execute(new SendMessage(userDog.getChatId(), "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
-                }
+            if (userDog != null && userDog.getPet().equals("yes")) {
+                telegramBot.execute(new SendMessage(userDog.getChatId(), "Для отчета просим прислать фото животного," +
+                        " его рацион, общее самочувствие и информацию об изменении в поведении."));
             }
         }
+    }
 
     public void takeReportFromOwner(Update update) {
         if (update.message().text() != null && update.message().photo() != null) {
-            telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+            telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим," +
+                    " что питомцу живется хорошо!"));
         } else {
-            telegramBot.execute(new SendMessage(update.message().chat().id(), "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо!"));
+            telegramBot.execute(new SendMessage(update.message().chat().id(), "Дорогой усыновитель, мы заметили," +
+                    " что ты заполняешь отчет не так подробно, как необходимо!"));
         }
     }
-    @Scheduled(cron= "@daily")
-    public void probation(){
+
+    @Scheduled(cron = "@daily")
+    public void probation() {
         LocalDate currentDate = LocalDate.now();
         List<UserCat> catUsers = userCatRepository.findAll();
         List<UserDog> dogUsers = userDogRepository.findAll();
         logger.info("ищу");
-        for(UserCat userCat: catUsers) {
+        for (UserCat userCat : catUsers) {
             if (userCat != null && userCat.getDate().equals(currentDate)) {
-                telegramBot.execute(new SendMessage(userCat.getChatId(), "Супер! Прошло 30 дней, ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
+                telegramBot.execute(new SendMessage(userCat.getChatId(), "Супер! Прошло 30 дней, " +
+                        "ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
             }
         }
-        for(UserDog userDog: dogUsers){
-                if(userDog!=null && userDog.getDate().equals(currentDate)){
-                    telegramBot.execute(new SendMessage(userDog.getChatId(), "Супер! Прошло 30 дней, ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
-                }
+        for (UserDog userDog : dogUsers) {
+            if (userDog != null && userDog.getDate().equals(currentDate)) {
+                telegramBot.execute(new SendMessage(userDog.getChatId(), "Супер! Прошло 30 дней," +
+                        " ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
             }
+        }
     }
-
-
 
 
     @Override

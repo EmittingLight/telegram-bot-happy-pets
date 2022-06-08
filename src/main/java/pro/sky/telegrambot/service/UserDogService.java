@@ -123,7 +123,8 @@ public class UserDogService implements CatsDogsInterface {
     }
     @Override
     public void stepThree(Update update) {
-        telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+        telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
     }
 
     @Override
