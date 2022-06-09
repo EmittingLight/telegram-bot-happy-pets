@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import org.hibernate.type.LocalDateType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,11 @@ import pro.sky.telegrambot.repository.CatsDogsInterface;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.UserCatRepository;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +29,7 @@ public class UserCatService implements CatsDogsInterface {
 
     private final UserCatRepository userCatRepository;
 
-    public UserCatService(UserCatRepository userCatRepository, TelegramBot telegramBot) {
+    public UserCatService(UserCatRepository userCatRepository,  TelegramBot telegramBot) {
         this.userCatRepository = userCatRepository;
         this.telegramBot = telegramBot;
     }
@@ -109,6 +114,11 @@ public class UserCatService implements CatsDogsInterface {
                 "рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте. " +
                 "А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
     }
+    @Override
+    public void stepThree(Update update) {
+        telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+    }
 
     @Override
     /**
@@ -157,7 +167,8 @@ public class UserCatService implements CatsDogsInterface {
             logger.info("поделил");
             if (matcher.matches()) {
                 String ownerName = matcher.group();
-                UserCat object = new UserCat(message.chat().id(), ownerName);
+                LocalDate probationDate = LocalDate.now().plusDays(30);
+                UserCat object = new UserCat(message.chat().id(), ownerName, "no", probationDate);
                 userCatRepository.save(object);
                 logger.info("сохранил");
             }
@@ -226,7 +237,7 @@ public class UserCatService implements CatsDogsInterface {
     public void deleteUserCat(Long id) {
         userCatRepository.deleteById(id);
     }
-    public List<UserCat> getAllUsersCat() {
+    public Collection<UserCat> getAllUsersCat() {
         return userCatRepository.findAll();
     }
 }

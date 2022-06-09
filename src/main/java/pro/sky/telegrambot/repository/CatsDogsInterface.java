@@ -17,4 +17,5 @@ public interface CatsDogsInterface {
     void transport(Update update);
     void home(Update update);
     void refusal(Update update);
+    void stepThree(Update update);
 }

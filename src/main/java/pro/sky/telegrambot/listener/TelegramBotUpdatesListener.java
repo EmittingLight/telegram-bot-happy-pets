@@ -11,21 +11,30 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
+import pro.sky.telegrambot.model.UserCat;
+import pro.sky.telegrambot.model.UserDog;
+import pro.sky.telegrambot.repository.UserCatRepository;
+import pro.sky.telegrambot.repository.UserDogRepository;
 import pro.sky.telegrambot.service.UserCatService;
 import pro.sky.telegrambot.service.UserDogService;
 
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-
     @Autowired
     private TelegramBot telegramBot;
 
@@ -37,9 +46,17 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
 
     private final UserCatService userCatService;
     private final UserDogService userDogService;
-    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService){
+
+    private final UserCatRepository userCatRepository;
+    private final UserDogRepository userDogRepository;
+
+
+    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService, UserCatRepository userCatRepository, UserDogRepository userDogRepository) {
         this.userCatService = userCatService;
         this.userDogService = userDogService;
+        this.userCatRepository = userCatRepository;
+        this.userDogRepository = userDogRepository;
+
 
     }
 
@@ -48,38 +65,43 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
      * main метод телеграмм бота
      */
     public int process(List<Update> updates) {
-        updates.forEach(update -> {
-            logger.info("Processing update: {}", update);
-            Message message = update.message();
-            if(message!=null && message.text().equals(new String("/start"))){
-                getButtons(message);
-            }else if(update.callbackQuery()!=null) {
-                extracted(update);
-            }else{
+        try {
+            updates.forEach(update -> {
+                logger.info("Processing update: {}", update);
+                Message message = update.message();
+                if (message != null && message.text().equals(new String("/start"))) {
+                    getButtons(message);
+                } else if (update.callbackQuery() != null) {
+                    extracted(update);
+                } else if (message != null && message.text() != null && message.photo() != null) {
+                    telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+                } else {
 
-                userCatService.saveUser(message);
-                userDogService.saveUser(message);
+                    userCatService.saveUser(message);
+                    userDogService.saveUser(message);
 
-            }
-        });
+                }
+            });
+        } catch (NullPointerException e) {
+            logger.error("НалПоинтерБесит");
+        }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
     /**
      * метод обработки нажатий кнопок меню в зависимости от того какая кнопка была нажата вызывается метод сервисов
-     *
      */
     private void extracted(Update update) {
         String data = update.callbackQuery().data();
-        switch(data){
-            case("коты"):
+        switch (data) {
+            case ("коты"):
 
                 userCatService.getMenu(update);
                 break;
-            case("инфа0"):
+            case ("инфа0"):
                 userCatService.stepOne(update);
                 break;
-            case("расписание0"):
+            case ("расписание0"):
                 userCatService.sendAddress(update);
                 break;
             case ("авто0"):
@@ -88,10 +110,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("тб0"):
                 userCatService.beSafe(update);
                 break;
-            case("взять0"):
+            case ("взять0"):
                 userCatService.stepTwo(update);
                 break;
-            case("документы0"):
+            case ("документы0"):
                 userCatService.docs(update);
                 break;
             case ("транспортировка0"):
@@ -100,29 +122,31 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("обустройство0"):
                 userCatService.home(update);
                 break;
-            case("отказ0"):
+            case ("отказ0"):
                 userCatService.refusal(update);
                 break;
-            case("сохранение0"):
+            case ("сохранение0"):
                 userCatService.giveMeYourName(update);
                 break;
             case ("волонтер0"):
                 userCatService.volunteer(update);
-
+                break;
+            case ("отчет0"):
+                userCatService.stepThree(update);
                 break;
             default:
                 break;
         }
         String data2 = update.callbackQuery().data();
-        switch(data2){
-            case("псы"):
+        switch (data2) {
+            case ("псы"):
 
                 userDogService.getMenu(update);
                 break;
-            case("инфа1"):
+            case ("инфа1"):
                 userDogService.stepOne(update);
                 break;
-            case("расписание1"):
+            case ("расписание1"):
                 userDogService.sendAddress(update);
                 break;
             case ("авто1"):
@@ -131,10 +155,10 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("тб1"):
                 userDogService.beSafe(update);
                 break;
-            case("взять1"):
+            case ("взять1"):
                 userDogService.stepTwo(update);
                 break;
-            case("документы1"):
+            case ("документы1"):
                 userDogService.docs(update);
                 break;
             case ("транспортировка1"):
@@ -149,15 +173,17 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             case ("списокКинологов1"):
                 userDogService.cynologistList(update);
                 break;
-            case("отказ1"):
+            case ("отказ1"):
                 userDogService.refusal(update);
                 break;
-            case("сохранение1"):
+            case ("сохранение1"):
                 userDogService.giveMeYourName(update);
                 break;
             case ("волонтер1"):
                 userDogService.volunteer(update);
-
+                break;
+            case ("отчет1"):
+                userDogService.stepThree(update);
                 break;
             default:
                 break;
@@ -166,18 +192,66 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
 
     /**
      * метод возвращающий  кнопки первичного меню
-     *
      */
-    private SendResponse getButtons(Message message){
+    private SendResponse getButtons(Message message) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonCats = new InlineKeyboardButton("\uD83D\uDC31Кошки");
         InlineKeyboardButton buttonDogs = new InlineKeyboardButton("\uD83D\uDC36Собаки");
         buttonCats.callbackData("коты");
         buttonDogs.callbackData("псы");
-        keyboardMarkup.addRow(buttonCats,buttonDogs);
+        keyboardMarkup.addRow(buttonCats, buttonDogs);
         logger.info("Клавиатура создана");
-        return telegramBot.execute(new SendMessage(message.chat().id(),"Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
+        return telegramBot.execute(new SendMessage(message.chat().id(), "Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
+
+    @Scheduled(cron = "00 00 11 1-30 * ?")
+    public void findOwner() {
+        List<UserCat> cats = userCatRepository.findAll();
+        List<UserDog> dogs = userDogRepository.findAll();
+        for (UserCat userCat : cats) {
+            if (userCat != null && userCat.getPet().equals("yes")) {
+                telegramBot.execute(new SendMessage(userCat.getChatId(), "Для отчета просим прислать фото животного," +
+                        " его рацион, общее самочувствие и информацию об изменении в поведении."));
+            }
+        }
+        for (UserDog userDog : dogs) {
+            if (userDog != null && userDog.getPet().equals("yes")) {
+                telegramBot.execute(new SendMessage(userDog.getChatId(), "Для отчета просим прислать фото животного," +
+                        " его рацион, общее самочувствие и информацию об изменении в поведении."));
+            }
+        }
+    }
+
+    public void takeReportFromOwner(Update update) {
+        if (update.message().text() != null && update.message().photo() != null) {
+            telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим," +
+                    " что питомцу живется хорошо!"));
+        } else {
+            telegramBot.execute(new SendMessage(update.message().chat().id(), "Дорогой усыновитель, мы заметили," +
+                    " что ты заполняешь отчет не так подробно, как необходимо!"));
+        }
+    }
+
+    @Scheduled(cron = "@daily")
+    public void probation() {
+        LocalDate currentDate = LocalDate.now();
+        List<UserCat> catUsers = userCatRepository.findAll();
+        List<UserDog> dogUsers = userDogRepository.findAll();
+        logger.info("ищу");
+        for (UserCat userCat : catUsers) {
+            if (userCat != null && userCat.getDate().equals(currentDate)) {
+                telegramBot.execute(new SendMessage(userCat.getChatId(), "Супер! Прошло 30 дней, " +
+                        "ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
+            }
+        }
+        for (UserDog userDog : dogUsers) {
+            if (userDog != null && userDog.getDate().equals(currentDate)) {
+                telegramBot.execute(new SendMessage(userDog.getChatId(), "Супер! Прошло 30 дней," +
+                        " ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
+            }
+        }
+    }
+
 
     @Override
     public void onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update update) {

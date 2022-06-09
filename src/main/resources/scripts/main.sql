@@ -1,4 +1,5 @@
--- liquibase formatted sql
+
+ -- liquibase formatted sql
 
 -- changeset sergei:1
 
@@ -7,7 +8,9 @@ CREATE TABLE userCat
 (
     id            SERIAL PRIMARY KEY,
     chatId        INT,
-    catsOwnerName TEXT
+    catsOwnerName TEXT,
+    pet TEXT,
+    date timestamp
 );
 
 CREATE TABLE userDog
@@ -15,11 +18,7 @@ CREATE TABLE userDog
 (
     id            SERIAL PRIMARY KEY,
     chatId        INT,
-    dogsOwnerName TEXT
-);
-CREATE TABLE owner
-(
-    id            SERIAL PRIMARY KEY,
-    chatId        INT,
-    dogsOwnerName TEXT
+    dogsOwnerName TEXT,
+    pet TEXT,
+    date timestamp
 );

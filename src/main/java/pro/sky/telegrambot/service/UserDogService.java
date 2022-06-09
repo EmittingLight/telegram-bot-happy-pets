@@ -10,11 +10,14 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.repository.CatsDogsInterface;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.model.UserDog;
 import pro.sky.telegrambot.repository.UserDogRepository;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -118,6 +121,11 @@ public class UserDogService implements CatsDogsInterface {
                         " рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте." +
                         " А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
     }
+    @Override
+    public void stepThree(Update update) {
+        telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+    }
 
     @Override
     /**
@@ -167,7 +175,8 @@ public class UserDogService implements CatsDogsInterface {
             logger.info("поделил");
             if (matcher.matches()) {
                 String ownerName = matcher.group();
-                UserDog object = new UserDog(message.chat().id(), ownerName);
+                LocalDate probationDate = LocalDate.now().plusDays(30);
+                UserDog object = new UserDog(message.chat().id(), ownerName, "no", probationDate);
                 userDogRepository.save(object);
                 logger.info("сохранил");
             }
@@ -226,7 +235,6 @@ public class UserDogService implements CatsDogsInterface {
 
     /**
      * метод возвращающий сообщение о правилах воспитания собаки
-     *
      */
     public SendResponse cynologist(Update update) {
         return telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
@@ -236,6 +244,7 @@ public class UserDogService implements CatsDogsInterface {
 
     /**
      * метод возвращающий сообщение о подборе кинолога для собаки
+     *
      * @param update
      * @return
      */
@@ -260,7 +269,7 @@ public class UserDogService implements CatsDogsInterface {
         userDogRepository.deleteById(id);
     }
 
-    public List<UserDog> getAllUsersDog() {
+    public Collection<UserDog> getAllUsersDog() {
         return userDogRepository.findAll();
     }
 }
