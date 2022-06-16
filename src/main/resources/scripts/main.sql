@@ -7,7 +7,7 @@ CREATE TABLE userCat
 
 (
     id            SERIAL PRIMARY KEY,
-    chatId        INT,
+    user_cat_id     INT,
     catsOwnerName TEXT,
     pet TEXT,
     date timestamp
@@ -22,3 +22,15 @@ CREATE TABLE userDog
     pet TEXT,
     date timestamp
 );
+
+ CREATE TABLE picture
+
+ (
+     id            SERIAL PRIMARY KEY,
+     userCatId     INT,
+     filePath       text,
+     fileSize       INT,
+     mediaType      text,
+
+    FOREIGN KEY (userCatId) REFERENCES userCat
+ );

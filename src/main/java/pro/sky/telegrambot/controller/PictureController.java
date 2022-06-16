@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.controller;
 
+import com.pengrad.telegrambot.model.File;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,8 +28,8 @@ public class PictureController {
     }
 
     @PostMapping(value = "/{userCatId}/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long userCatId, @RequestParam MultipartFile picture) throws IOException {
-        pictureService.uploadPicture(userCatId, picture);
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long userCatId, @RequestParam MultipartFile picture, @RequestParam File file) throws IOException {
+        pictureService.uploadPicture(userCatId, picture.getBytes(), file);
         return ResponseEntity.ok().build();
     }
 

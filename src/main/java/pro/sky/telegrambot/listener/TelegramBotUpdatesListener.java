@@ -2,11 +2,14 @@ package pro.sky.telegrambot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +18,20 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
+import pro.sky.telegrambot.model.Picture;
 import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.model.UserDog;
 import pro.sky.telegrambot.repository.UserCatRepository;
 import pro.sky.telegrambot.repository.UserDogRepository;
+import pro.sky.telegrambot.service.PictureService;
 import pro.sky.telegrambot.service.UserCatService;
 import pro.sky.telegrambot.service.UserDogService;
 
 
 import javax.annotation.PostConstruct;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -49,13 +57,15 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
 
     private final UserCatRepository userCatRepository;
     private final UserDogRepository userDogRepository;
+    private final PictureService pictureService;
 
 
-    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService, UserCatRepository userCatRepository, UserDogRepository userDogRepository) {
+    public TelegramBotUpdatesListener(UserCatService userCatService, UserDogService userDogService, UserCatRepository userCatRepository, UserDogRepository userDogRepository, PictureService pictureService) {
         this.userCatService = userCatService;
         this.userDogService = userDogService;
         this.userCatRepository = userCatRepository;
         this.userDogRepository = userDogRepository;
+        this.pictureService = pictureService;
 
 
     }
@@ -69,17 +79,25 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             updates.forEach(update -> {
                 logger.info("Processing update: {}", update);
                 Message message = update.message();
-                if (message != null && message.text().equals(new String("/start"))) {
+                if (message != null && message.photo() == null && message.text().equals("/start")) {
                     getButtons(message);
                 } else if (update.callbackQuery() != null) {
                     extracted(update);
-                } else if (message != null && message.text() != null && message.photo() != null) {
-                    telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
-                } else {
+                } else if (message != null && message.caption() != null && message.photo() != null) {
+                    GetFile getFileRequest = new GetFile(message.photo()[0].fileId());
+                    GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);
+                    try {
+                        File file = getFileResponse.file();
+                        byte[] fileContent = telegramBot.getFileContent(file);
+                        pictureService.uploadPicture(update.message().chat().id(), fileContent, file);
+                        telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+                    } catch (IOException e) {
+                        logger.error("something went wrong");
+                    }
 
+                } else {
                     userCatService.saveUser(message);
                     userDogService.saveUser(message);
-
                 }
             });
         } catch (NullPointerException e) {
@@ -87,6 +105,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
+
 
     /**
      * метод обработки нажатий кнопок меню в зависимости от того какая кнопка была нажата вызывается метод сервисов
@@ -221,16 +240,26 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             }
         }
     }
-
+/*
     public void takeReportFromOwner(Update update) {
-        if (update.message().text() != null && update.message().photo() != null) {
-            telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим," +
-                    " что питомцу живется хорошо!"));
+        if (update.message() != null && update.message().caption() != null && update.message().photo() != null) {
+            GetFile getFileRequest = new GetFile(update.message().photo()[0].fileId());
+            GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);
+            try {
+                File file = getFileResponse.file();
+                byte[] fileContent = telegramBot.getFileContent(file);
+                pictureService.uploadPicture(update.message().chat().id(), fileContent, file);
+                telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+            } catch (IOException e) {
+                logger.error("something went wrong");
+            }
         } else {
             telegramBot.execute(new SendMessage(update.message().chat().id(), "Дорогой усыновитель, мы заметили," +
                     " что ты заполняешь отчет не так подробно, как необходимо!"));
         }
     }
+
+ */
 
     @Scheduled(cron = "@daily")
     public void probation() {

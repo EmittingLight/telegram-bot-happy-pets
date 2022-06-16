@@ -14,6 +14,7 @@ import pro.sky.telegrambot.repository.UserCatRepository;
 import pro.sky.telegrambot.repository.UserDogRepository;
 
 import javax.transaction.Transactional;
+import com.pengrad.telegrambot.model.File;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,26 +41,17 @@ public class PictureService {
         this.userDogRepository = userDogRepository;
     }
 
-    public void uploadPicture(Long userCatId, MultipartFile pictureFile) throws IOException {
+    public void uploadPicture(Long userCatId, byte[] pictureFile, File file) throws IOException {
         logger.info("Был вызван метод для загрузки фотографии  '{}'", userCatId);
         UserCat userCat = userCatRepository.getById(userCatId);
-        Path filePath = Path.of(picturesDir, userCat + "." + getExtensions(Objects.requireNonNull(pictureFile.getOriginalFilename())));
+        Path filePath = Path.of(picturesDir, "pictures" + "." + getExtensions(Objects.requireNonNull(file.filePath())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
-        try (
-                InputStream is = pictureFile.getInputStream();
-                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is);
-                BufferedOutputStream bos = new BufferedOutputStream(os)
-        ) {
-            bis.transferTo(bos);
-        }
         Picture picture = findPicture(userCatId);
         picture.setUserCat(userCat);
         picture.setFilePath(filePath.toString());
-        picture.setFileSize(pictureFile.getSize());
-        picture.setMediaType(pictureFile.getContentType());
-        picture.setData(pictureFile.getBytes());
+        picture.setFileSize(file.fileSize());
+        picture.setData(pictureFile);
         pictureRepository.save(picture);
     }
 

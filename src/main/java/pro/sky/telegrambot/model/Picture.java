@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "pictures")
@@ -10,7 +11,7 @@ public class Picture {
     private Long id;
 
     private String filePath;
-    private long fileSize;
+    private int fileSize;
     private String mediaType;
     private byte[] data;
 
@@ -52,11 +53,11 @@ public class Picture {
         this.filePath = filePath;
     }
 
-    public long getFileSize() {
+    public int getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public void setFileSize(int fileSize) {
         this.fileSize = fileSize;
     }
 
