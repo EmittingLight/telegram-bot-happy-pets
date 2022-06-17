@@ -39,14 +39,14 @@ public class TelegramBotApplicationTests {
     private UserCatRepository userCatRepository;
     @MockBean
     private UserDogRepository userDogRepository;
-    @MockBean
-    private OwnerRepository ownerRepository;
+    //@MockBean
+    //private OwnerRepository ownerRepository;
     @SpyBean
     private UserCatService userCatService;
     @SpyBean
     private UserDogService userDogService;
-    @SpyBean
-    private OwnerService ownerService;
+    //@SpyBean
+   // private OwnerService ownerService;
 
 
     @Test
@@ -106,7 +106,7 @@ public class TelegramBotApplicationTests {
                 .andExpect(jsonPath("$.userName").value(name))
                 .andExpect(jsonPath("$.id").value(id));
     }
-
+/*
     @Test
     public void saveOwnerTest() throws Exception {
         final String name = "Simson";
@@ -133,5 +133,7 @@ public class TelegramBotApplicationTests {
     }
 
 
+
+ */
 
 }
