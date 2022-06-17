@@ -1,4 +1,5 @@
 
+
  -- liquibase formatted sql
 
 -- changeset sergei:1
@@ -23,14 +24,12 @@ CREATE TABLE userDog
     date timestamp
 );
 
- CREATE TABLE picture
+CREATE TABLE picture
 
- (
-     id            SERIAL PRIMARY KEY,
-     userCatId     INT,
-     filePath       text,
-     fileSize       INT,
-     mediaType      text,
-
-    FOREIGN KEY (userCatId) REFERENCES userCat
- );
+(
+    id            SERIAL PRIMARY KEY,
+    chatId    INT,
+    filePath       text,
+    fileSize       INT,
+    mediaType      text
+);

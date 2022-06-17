@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 
 @RestController
 @RequestMapping("picture")
@@ -28,8 +27,8 @@ public class PictureController {
     }
 
     @PostMapping(value = "/{userCatId}/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long userCatId, @RequestParam MultipartFile picture, @RequestParam File file) throws IOException {
-        pictureService.uploadPicture(userCatId, picture.getBytes(), file);
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long chatId, @RequestParam MultipartFile picture, @RequestParam File file) throws IOException {
+        pictureService.uploadPicture(chatId, picture.getBytes(), file);
         return ResponseEntity.ok().build();
     }
 

@@ -2,6 +2,8 @@ package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pictures")
@@ -77,5 +79,31 @@ public class Picture {
         return data;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Picture picture = (Picture) o;
+        return fileSize == picture.fileSize && Objects.equals(id, picture.id) && Objects.equals(filePath, picture.filePath) && Objects.equals(mediaType, picture.mediaType) && Arrays.equals(data, picture.data) && Objects.equals(userCat, picture.userCat) && Objects.equals(userDog, picture.userDog);
+    }
 
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id, filePath, fileSize, mediaType, userCat, userDog);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Picture{" +
+                "id=" + id +
+                ", filePath='" + filePath + '\'' +
+                ", fileSize=" + fileSize +
+                ", mediaType='" + mediaType + '\'' +
+                ", data=" + Arrays.toString(data) +
+                ", userCat=" + userCat +
+                ", userDog=" + userDog +
+                '}';
+    }
 }
