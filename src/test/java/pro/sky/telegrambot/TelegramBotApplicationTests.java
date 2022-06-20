@@ -106,7 +106,7 @@ public class TelegramBotApplicationTests {
                 .andExpect(jsonPath("$.userName").value(name))
                 .andExpect(jsonPath("$.id").value(id));
     }
-/*
+    /*
     @Test
     public void saveOwnerTest() throws Exception {
         final String name = "Simson";
@@ -131,9 +131,6 @@ public class TelegramBotApplicationTests {
                 .andExpect(jsonPath("$.ownerName").value(name))
                 .andExpect(jsonPath("$.id").value(id));
     }
-
-
-
- */
+     */
 
 }

@@ -19,6 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import pro.sky.telegrambot.model.Picture;
 import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.model.UserDog;
@@ -35,6 +39,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -95,6 +100,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                         telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
                     } catch (IOException e) {
                         logger.error("something went wrong");
+
                     }
 
                 } else {
@@ -103,7 +109,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 }
             });
         } catch (NullPointerException e) {
-            logger.error("НалПоинтерБесит");
+            logger.error("Заполните отчет правильно");
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
@@ -270,17 +276,50 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         List<UserDog> dogUsers = userDogRepository.findAll();
         logger.info("ищу");
         for (UserCat userCat : catUsers) {
-            if (userCat != null && userCat.getDate().equals(currentDate)) {
+            if (userCat != null && userCat.getDate().equals(currentDate) && userCat.getPet().equals("yes")) {
                 telegramBot.execute(new SendMessage(userCat.getChatId(), "Супер! Прошло 30 дней, " +
                         "ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
+            } else {
+                telegramBot.execute(new SendMessage(userCat.getChatId(), "К сожалению, испытательный срок не пройден! Приходите к нам в приют и попробуем еще раз! "));
             }
         }
         for (UserDog userDog : dogUsers) {
-            if (userDog != null && userDog.getDate().equals(currentDate)) {
+            if (userDog != null && userDog.getDate().equals(currentDate) && userDog.getPet().equals("yes")) {
                 telegramBot.execute(new SendMessage(userDog.getChatId(), "Супер! Прошло 30 дней," +
                         " ты отлично заботишься о питомце.Поздравляем с окончанием испытательного срока!"));
+            } else {
+                telegramBot.execute(new SendMessage(userDog.getChatId(), "К сожалению, испытательный срок не пройден! Приходите к нам в приют и попробуем еще раз! "));
             }
         }
+    }
+    private void sendMsg(org.telegram.telegrambots.meta.api.objects.Message message, String text) {
+        org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessage = new org.telegram.telegrambots.meta.api.methods.send.SendMessage();
+        sendMessage.enableMarkdown(true);
+        sendMessage.setChatId(message.getChatId().toString());
+        sendMessage.setReplyToMessageId(message.getMessageId());
+        sendMessage.setText(text);
+        try {
+            setButtons(sendMessage);
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setButtons(org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessage) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
+
+        List<KeyboardRow> keyboardRowList = new ArrayList<>();
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        keyboardFirstRow.add(new KeyboardButton("/help"));
+
+        keyboardRowList.add(keyboardFirstRow);
+        replyKeyboardMarkup.setKeyboard(keyboardRowList);
+
     }
 
 

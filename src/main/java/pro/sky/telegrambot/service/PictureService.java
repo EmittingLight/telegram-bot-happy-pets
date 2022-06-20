@@ -40,12 +40,10 @@ public class PictureService {
 
     public void uploadPicture(Long chatId, byte[] pictureFile, File file) throws IOException {
         logger.info("Был вызван метод для загрузки фотографии  '{}'", chatId);
-        UserCat userCat = userCatRepository.getById(chatId);
         Path filePath = Path.of(picturesDir, "pictures" + "." + getExtensions(Objects.requireNonNull(file.filePath())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         Picture picture = findPicture(chatId);
-        // picture.setUserCat(userCat);
         picture.setFilePath(filePath.toString());
         picture.setFileSize(file.fileSize());
         picture.setData(pictureFile);
