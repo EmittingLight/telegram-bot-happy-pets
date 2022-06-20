@@ -26,12 +26,26 @@ public class PictureController {
         this.pictureService = pictureService;
     }
 
+    /**
+     * метод post принимает в качестве параметра фото и вызывает метод сервиса по сохранению переданного файла
+     * @param chatId
+     * @param picture
+     * @param file
+     * @return
+     * @throws IOException
+     */
+
     @PostMapping(value = "/{userCatId}/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long chatId, @RequestParam MultipartFile picture, @RequestParam File file) throws IOException {
         pictureService.uploadPicture(chatId, picture.getBytes(), file);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * метод get -принимает в качестве параметра id и вызывает метод сервиса по извлечению из БД по id фото
+     * @param id
+     * @return
+     */
     @GetMapping(value = "/{id}/from-db")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Picture picture = pictureService.findPicture(id);

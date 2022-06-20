@@ -15,16 +15,31 @@ public class UserCatController {
         this.userCatService = userCatService;
     }
 
+    /**
+     * метод post принимает в качестве параметра userCat и вызывает метод сервиса по созданию объекта userCat в БД
+     * * @param userCat
+     * @return
+     */
     @PostMapping
     public UserCat createCatsUser(@RequestBody UserCat userCat) {
         return userCatService.createUserCat(userCat);
     }
 
+    /**
+     * метод get принимает в качестве параметра id и вызывает метод сервиса по извлечению userCat из БД
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     public UserCat getCatsUserInfo(@PathVariable Long id) {
         return userCatService.findUserCat(id);
     }
 
+    /**
+     * метод put принимает в качестве параметра userCat и вызывает метод сервиса по редактированию в БД
+     * @param userCat
+     * @return
+     */
     @PutMapping
     public UserCat editCatsUser(@RequestBody UserCat userCat) {
         return userCatService.editUserCat(userCat);
