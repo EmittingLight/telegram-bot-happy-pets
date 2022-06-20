@@ -13,6 +13,8 @@ import pro.sky.telegrambot.repository.UserCatRepository;
 import pro.sky.telegrambot.repository.UserDogRepository;
 
 import javax.transaction.Transactional;
+import javax.xml.crypto.Data;
+
 import com.pengrad.telegrambot.model.File;
 import java.io.*;
 import java.nio.file.Files;
@@ -38,6 +40,13 @@ public class PictureService {
         this.userDogRepository = userDogRepository;
     }
 
+    /**
+     * метод по загрузке фото принимает в качестве параметра файл и вызывает метод репозитория по сохранению в БД
+     * @param chatId
+     * @param pictureFile
+     * @param file
+     * @throws IOException
+     */
     public void uploadPicture(Long chatId, byte[] pictureFile, File file) throws IOException {
         logger.info("Был вызван метод для загрузки фотографии  '{}'", chatId);
         Path filePath = Path.of(picturesDir, "pictures" + "." + getExtensions(Objects.requireNonNull(file.filePath())));
@@ -50,6 +59,11 @@ public class PictureService {
         pictureRepository.save(picture);
     }
 
+    /**
+     * метод поиска фото , принимает в качестве параметра chatId и вызывает метод репозитория по поиску из БД
+     * @param chatId
+     * @return
+     */
     public Picture findPicture(Long chatId) {
         try {
             logger.info("Был вызван метод для поиска фотографии '{}'",chatId );
@@ -62,4 +76,7 @@ public class PictureService {
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
+
+
 }
+

@@ -231,6 +231,9 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         return telegramBot.execute(new SendMessage(message.chat().id(), "Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
 
+    /**
+     * метод который вызывается каждые сутки и напоминает об отправки ежедневного фото отчета
+     */
     @Scheduled(cron = "00 00 11 1-30 * ?")
     public void findOwner() {
         List<UserCat> cats = userCatRepository.findAll();
@@ -269,6 +272,9 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
 
  */
 
+    /**
+     * метод проверки ежедневных отчетов на протяжении испытательного срока
+     */
     @Scheduled(cron = "@daily")
     public void probation() {
         LocalDate currentDate = LocalDate.now();

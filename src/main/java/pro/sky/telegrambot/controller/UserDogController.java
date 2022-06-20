@@ -15,16 +15,31 @@ public class UserDogController {
         this.userDogService = userDogService;
     }
 
+    /**
+     * метод post принимает в качестве параметра userDog и вызывает метод сервиса по созданию объекта userDog в БД
+     * @param userDog
+     * @return
+     */
     @PostMapping
     public UserDog createDogsUser(@RequestBody UserDog userDog) {
         return userDogService.createUserDog(userDog);
     }
 
+    /**
+     * метод get принимает в качестве параметра id и вызывает метод сервиса по извлечению обьекта userDog из БД
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     public UserDog getDogsUserInfo(@PathVariable Long id) {
         return userDogService.findUserDog(id);
     }
 
+    /**
+     * метод put принимает в качестве параметра userDog и вызывает метод сервиса по редактированию в БД
+     * @param userDog
+     * @return
+     */
     @PutMapping
     public UserDog editDogsUser(@RequestBody UserDog userDog) {
         return userDogService.editUserDog(userDog);
