@@ -8,7 +8,7 @@ CREATE TABLE userCat
 
 (
     id            SERIAL PRIMARY KEY,
-    user_cat_id     INT,
+    chatId    INT,
     catsOwnerName TEXT,
     pet TEXT,
     date timestamp
