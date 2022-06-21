@@ -46,7 +46,7 @@ public class TelegramBotApplicationTests {
     @SpyBean
     private UserDogService userDogService;
     //@SpyBean
-   // private OwnerService ownerService;
+    // private OwnerService ownerService;
 
 
     @Test
@@ -106,31 +106,5 @@ public class TelegramBotApplicationTests {
                 .andExpect(jsonPath("$.userName").value(name))
                 .andExpect(jsonPath("$.id").value(id));
     }
-    /*
-    @Test
-    public void saveOwnerTest() throws Exception {
-        final String name = "Simson";
-        final long id = 1;
-
-        JSONObject userOwnerObject = new JSONObject();
-        userOwnerObject.put("name", name);
-
-        Owner owner = new Owner();
-        owner.setId(id);
-        owner.setOwnerName(name);
-        when(ownerRepository.save(any(Owner.class))).thenReturn(owner);
-        when(ownerRepository.findById(any(Long.class))).thenReturn(Optional.of(owner));
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/cat-owner")
-                        .content(userOwnerObject.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.ownerName").value(name))
-                .andExpect(jsonPath("$.id").value(id));
-    }
-     */
 
 }

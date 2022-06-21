@@ -1,6 +1,5 @@
 package pro.sky.telegrambot.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import pro.sky.telegrambot.model.Picture;
 

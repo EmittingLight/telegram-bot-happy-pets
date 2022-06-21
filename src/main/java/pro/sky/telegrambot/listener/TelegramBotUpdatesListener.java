@@ -19,11 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import pro.sky.telegrambot.model.Picture;
 import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.model.UserDog;
 import pro.sky.telegrambot.repository.UserCatRepository;
@@ -34,20 +29,15 @@ import pro.sky.telegrambot.service.UserDogService;
 
 
 import javax.annotation.PostConstruct;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @Component
 public class TelegramBotUpdatesListener extends TelegramLongPollingBot implements UpdatesListener {
+
+    private boolean isCat;
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     @Autowired
@@ -96,8 +86,8 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                     try {
                         File file = getFileResponse.file();
                         byte[] fileContent = telegramBot.getFileContent(file);
-                        pictureService.uploadPicture(update.message().chat().id(), fileContent, file);
-                        telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+                        //telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
+                        pictureService.uploadPicture(update.message().chat().id(), fileContent, file, isCat);
                     } catch (IOException e) {
                         logger.error("something went wrong");
 
@@ -122,7 +112,7 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         String data = update.callbackQuery().data();
         switch (data) {
             case ("коты"):
-
+                isCat = true;
                 userCatService.getMenu(update);
                 break;
             case ("инфа0"):
@@ -164,10 +154,11 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             default:
                 break;
         }
+
         String data2 = update.callbackQuery().data();
         switch (data2) {
             case ("псы"):
-
+                isCat = false;
                 userDogService.getMenu(update);
                 break;
             case ("инфа1"):
@@ -231,9 +222,6 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
         return telegramBot.execute(new SendMessage(message.chat().id(), "Привет!Для начала выбери питомца!").replyMarkup(keyboardMarkup));
     }
 
-    /**
-     * метод который вызывается каждые сутки и напоминает об отправки ежедневного фото отчета
-     */
     @Scheduled(cron = "00 00 11 1-30 * ?")
     public void findOwner() {
         List<UserCat> cats = userCatRepository.findAll();
@@ -251,30 +239,8 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
             }
         }
     }
-/*
-    public void takeReportFromOwner(Update update) {
-        if (update.message() != null && update.message().caption() != null && update.message().photo() != null) {
-            GetFile getFileRequest = new GetFile(update.message().photo()[0].fileId());
-            GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);
-            try {
-                File file = getFileResponse.file();
-                byte[] fileContent = telegramBot.getFileContent(file);
-                pictureService.uploadPicture(update.message().chat().id(), fileContent, file);
-                telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
-            } catch (IOException e) {
-                logger.error("something went wrong");
-            }
-        } else {
-            telegramBot.execute(new SendMessage(update.message().chat().id(), "Дорогой усыновитель, мы заметили," +
-                    " что ты заполняешь отчет не так подробно, как необходимо!"));
-        }
-    }
 
- */
 
-    /**
-     * метод проверки ежедневных отчетов на протяжении испытательного срока
-     */
     @Scheduled(cron = "@daily")
     public void probation() {
         LocalDate currentDate = LocalDate.now();
@@ -297,35 +263,6 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                 telegramBot.execute(new SendMessage(userDog.getChatId(), "К сожалению, испытательный срок не пройден! Приходите к нам в приют и попробуем еще раз! "));
             }
         }
-    }
-    private void sendMsg(org.telegram.telegrambots.meta.api.objects.Message message, String text) {
-        org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessage = new org.telegram.telegrambots.meta.api.methods.send.SendMessage();
-        sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText(text);
-        try {
-            setButtons(sendMessage);
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void setButtons(org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessage) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
-
-        List<KeyboardRow> keyboardRowList = new ArrayList<>();
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add(new KeyboardButton("/help"));
-
-        keyboardRowList.add(keyboardFirstRow);
-        replyKeyboardMarkup.setKeyboard(keyboardRowList);
-
     }
 
 

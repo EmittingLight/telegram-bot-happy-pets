@@ -37,7 +37,7 @@ public class PictureController {
 
     @PostMapping(value = "/{userCatId}/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long chatId, @RequestParam MultipartFile picture, @RequestParam File file) throws IOException {
-        pictureService.uploadPicture(chatId, picture.getBytes(), file);
+        pictureService.uploadPicture(chatId, picture.getBytes(), file, false);
         return ResponseEntity.ok().build();
     }
 

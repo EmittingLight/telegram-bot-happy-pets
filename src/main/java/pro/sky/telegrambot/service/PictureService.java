@@ -1,19 +1,18 @@
 package pro.sky.telegrambot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.model.Picture;
-import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.repository.PictureRepository;
 import pro.sky.telegrambot.repository.UserCatRepository;
 import pro.sky.telegrambot.repository.UserDogRepository;
 
 import javax.transaction.Transactional;
-import javax.xml.crypto.Data;
 
 import com.pengrad.telegrambot.model.File;
 import java.io.*;
@@ -47,16 +46,38 @@ public class PictureService {
      * @param file
      * @throws IOException
      */
-    public void uploadPicture(Long chatId, byte[] pictureFile, File file) throws IOException {
-        logger.info("Был вызван метод для загрузки фотографии  '{}'", chatId);
-        Path filePath = Path.of(picturesDir, "pictures" + "." + getExtensions(Objects.requireNonNull(file.filePath())));
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        Picture picture = findPicture(chatId);
-        picture.setFilePath(filePath.toString());
-        picture.setFileSize(file.fileSize());
-        picture.setData(pictureFile);
-        pictureRepository.save(picture);
+    public void uploadPicture(Long chatId, byte[] pictureFile, File file, boolean isCat) throws IOException {
+
+            logger.info("Был вызван метод для загрузки фотографии  '{}'", chatId);
+            Path filePath = Path.of(picturesDir, "pictures" + "." + getExtensions(Objects.requireNonNull(file.filePath())));
+            Files.createDirectories(filePath.getParent());
+            Files.deleteIfExists(filePath);
+            Picture picture = findPicture(chatId);
+            picture.setFilePath(filePath.toString());
+            picture.setFileSize(file.fileSize());
+            picture.setData(pictureFile);
+            if (isCat) {
+                try {
+                    picture.setUserCat(userCatRepository.findByChatId(chatId).orElseThrow());
+                    pictureRepository.save(picture);
+                    telegramBot.execute(new SendMessage(chatId, "Супер! Мы видим, что питомцу живется хорошо!"));
+
+                } catch (Exception e) {
+                    logger.error("pictureservice");
+                    telegramBot.execute(new SendMessage(chatId, "давай сначала возьми животное"));
+                }
+            } else {
+                try {
+                    picture.setUserDog(userDogRepository.findByChatId(chatId).orElseThrow());
+                    pictureRepository.save(picture);
+                    telegramBot.execute(new SendMessage(chatId, "Супер! Мы видим, что питомцу живется хорошо!"));
+
+                } catch (Exception e) {
+                    logger.error("pictureservice");
+                    telegramBot.execute(new SendMessage(chatId, "давай сначала возьми животное"));
+                }
+
+            }
     }
 
     /**

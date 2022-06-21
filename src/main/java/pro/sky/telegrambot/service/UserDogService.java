@@ -10,7 +10,6 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.repository.CatsDogsInterface;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.model.UserDog;
@@ -18,7 +17,6 @@ import pro.sky.telegrambot.repository.UserDogRepository;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
