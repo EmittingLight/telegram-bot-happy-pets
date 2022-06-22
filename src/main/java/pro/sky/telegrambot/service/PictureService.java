@@ -15,6 +15,7 @@ import pro.sky.telegrambot.repository.UserDogRepository;
 import javax.transaction.Transactional;
 
 import com.pengrad.telegrambot.model.File;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +42,7 @@ public class PictureService {
 
     /**
      * метод по загрузке фото принимает в качестве параметра файл и вызывает метод репозитория по сохранению в БД
+     *
      * @param chatId
      * @param pictureFile
      * @param file
@@ -48,47 +50,48 @@ public class PictureService {
      */
     public void uploadPicture(Long chatId, byte[] pictureFile, File file, boolean isCat) throws IOException {
 
-            logger.info("Был вызван метод для загрузки фотографии  '{}'", chatId);
-            Path filePath = Path.of(picturesDir, "pictures" + "." + getExtensions(Objects.requireNonNull(file.filePath())));
-            Files.createDirectories(filePath.getParent());
-            Files.deleteIfExists(filePath);
-            Picture picture = findPicture(chatId);
-            picture.setFilePath(filePath.toString());
-            picture.setFileSize(file.fileSize());
-            picture.setData(pictureFile);
-            if (isCat) {
-                try {
-                    picture.setUserCat(userCatRepository.findByChatId(chatId).orElseThrow());
-                    pictureRepository.save(picture);
-                    telegramBot.execute(new SendMessage(chatId, "Супер! Мы видим, что питомцу живется хорошо!"));
+        logger.info("Был вызван метод для загрузки фотографии  '{}'", chatId);
+        Path filePath = Path.of(picturesDir, "pictures" + "." + getExtensions(Objects.requireNonNull(file.filePath())));
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        Picture picture = findPicture(chatId);
+        picture.setFilePath(filePath.toString());
+        picture.setFileSize(file.fileSize());
+        picture.setData(pictureFile);
+        if (isCat) {
+            try {
+                picture.setUserCat(userCatRepository.findByChatId(chatId).orElseThrow());
+                pictureRepository.save(picture);
+                telegramBot.execute(new SendMessage(chatId, "Супер! Мы видим, что питомцу живется хорошо!"));
 
-                } catch (Exception e) {
-                    logger.error("pictureservice");
-                    telegramBot.execute(new SendMessage(chatId, "давай сначала возьми животное"));
-                }
-            } else {
-                try {
-                    picture.setUserDog(userDogRepository.findByChatId(chatId).orElseThrow());
-                    pictureRepository.save(picture);
-                    telegramBot.execute(new SendMessage(chatId, "Супер! Мы видим, что питомцу живется хорошо!"));
-
-                } catch (Exception e) {
-                    logger.error("pictureservice");
-                    telegramBot.execute(new SendMessage(chatId, "давай сначала возьми животное"));
-                }
-
+            } catch (Exception e) {
+                logger.error("pictureservice");
+                telegramBot.execute(new SendMessage(chatId, "давай сначала возьми животное"));
             }
+        } else {
+            try {
+                picture.setUserDog(userDogRepository.findByChatId(chatId).orElseThrow());
+                pictureRepository.save(picture);
+                telegramBot.execute(new SendMessage(chatId, "Супер! Мы видим, что питомцу живется хорошо!"));
+
+            } catch (Exception e) {
+                logger.error("pictureservice");
+                telegramBot.execute(new SendMessage(chatId, "давай сначала возьми животное"));
+            }
+
+        }
     }
 
     /**
      * метод поиска фото , принимает в качестве параметра chatId и вызывает метод репозитория по поиску из БД
+     *
      * @param chatId
      * @return
      */
     public Picture findPicture(Long chatId) {
         try {
-            logger.info("Был вызван метод для поиска фотографии '{}'",chatId );
-            return  pictureRepository.findByUserCatId(chatId).orElse(new Picture());
+            logger.info("Был вызван метод для поиска фотографии '{}'", chatId);
+            return pictureRepository.findByUserCatId(chatId).orElse(new Picture());
         } catch (RuntimeException e) {
             throw new RuntimeException();
         }

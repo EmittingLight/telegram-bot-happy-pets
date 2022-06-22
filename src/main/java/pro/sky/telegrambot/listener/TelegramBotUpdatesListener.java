@@ -94,8 +94,11 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                     }
 
                 } else {
-                    userCatService.saveUser(message);
-                    userDogService.saveUser(message);
+                    if(isCat == true) {
+                        userCatService.saveUser(message);
+                    }else {
+                        userDogService.saveUser(message);
+                    }
                 }
             });
         } catch (NullPointerException e) {
