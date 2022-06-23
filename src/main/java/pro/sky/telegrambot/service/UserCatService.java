@@ -25,7 +25,7 @@ public class UserCatService implements CatsDogsInterface {
 
     private final UserCatRepository userCatRepository;
 
-    public UserCatService(UserCatRepository userCatRepository,  TelegramBot telegramBot) {
+    public UserCatService(UserCatRepository userCatRepository, TelegramBot telegramBot) {
         this.userCatRepository = userCatRepository;
         this.telegramBot = telegramBot;
     }
@@ -80,6 +80,7 @@ public class UserCatService implements CatsDogsInterface {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Добро пожаловать в кошачий приют!Что будем делать?").replyMarkup(keyboardMarkupForStepOne));
     }
+
     @Override
     /**
      * метод возвращающий подменю шаг 2
@@ -110,11 +111,13 @@ public class UserCatService implements CatsDogsInterface {
                 "рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте. " +
                 "А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
     }
+
     @Override
     public void stepThree(Update update) {
-            telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
-                    "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
+        telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                "Для отчета просим прислать фото животного, его рацион, общее самочувствие и информацию об изменении в поведении."));
     }
+
     @Override
     /**
      * метод возвращающий адрес приюта
@@ -153,6 +156,7 @@ public class UserCatService implements CatsDogsInterface {
 
     /**
      * метод сохраняет в БД юзера
+     *
      * @param message
      */
     public void saveUser(Message message) {
@@ -169,6 +173,7 @@ public class UserCatService implements CatsDogsInterface {
             }
         }
     }
+
     @Override
     /**
      *метод возвращающий сообщение на вызов кнопки позвать волонтера
@@ -177,6 +182,7 @@ public class UserCatService implements CatsDogsInterface {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                 "Ожидайте, Вам ответит освободившийся волонтер"));
     }
+
     @Override
     /**
      * метод возвращающий сообщение какие необходимы документы
@@ -186,6 +192,7 @@ public class UserCatService implements CatsDogsInterface {
                 "Для того, чтобы взять котенка, просим предоставить следующие документы: справка с места работы," +
                         " отсутствие вирусных инфекций в будущем доме."));
     }
+
     @Override
     /**
      * метод возвращающий сообщение с правилами транспортировки животного
@@ -195,6 +202,7 @@ public class UserCatService implements CatsDogsInterface {
                 "Когда будете забирать котенка, наличие переноски для кошек обязательно! " +
                         "Если Вы на своем авто, то ОБЯЗАТЕЛЬНО пристегните переноску ремнем безопасности."));
     }
+
     @Override
     /**
      * метод возвращающий сообщение о правилах домашнего содержания
@@ -207,6 +215,7 @@ public class UserCatService implements CatsDogsInterface {
                         " защищая свою территорию. Кот с ограниченными возможностями нуждается в большем внимании," +
                         " постарайтесь быть рядом в первое время."));
     }
+
     @Override
     /**
      * метод возвращающий сообщение о возможном отказе в усыновлении
@@ -232,6 +241,7 @@ public class UserCatService implements CatsDogsInterface {
     public void deleteUserCat(Long id) {
         userCatRepository.deleteById(id);
     }
+
     public Collection<UserCat> getAllUsersCat() {
         return userCatRepository.findAll();
     }

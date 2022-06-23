@@ -4,7 +4,6 @@ package pro.sky.telegrambot.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -28,8 +27,8 @@ public class UserCat {
     public UserCat(Long chatId, String userName, String pet, LocalDate date) {
         this.userName = userName;
         this.chatId = chatId;
-        this.pet=pet;
-        this.date=date;
+        this.pet = pet;
+        this.date = date;
 
     }
 

@@ -86,7 +86,6 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                     try {
                         File file = getFileResponse.file();
                         byte[] fileContent = telegramBot.getFileContent(file);
-                        //telegramBot.execute(new SendMessage(update.message().chat().id(), "Супер! Мы видим, что питомцу живется хорошо!"));
                         pictureService.uploadPicture(update.message().chat().id(), fileContent, file, isCat);
                     } catch (IOException e) {
                         logger.error("something went wrong");
@@ -94,9 +93,9 @@ public class TelegramBotUpdatesListener extends TelegramLongPollingBot implement
                     }
 
                 } else {
-                    if(isCat == true) {
+                    if (isCat) {
                         userCatService.saveUser(message);
-                    }else {
+                    } else {
                         userDogService.saveUser(message);
                     }
                 }

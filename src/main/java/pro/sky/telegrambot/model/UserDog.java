@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.Objects;
+
 @Entity
 public class UserDog {
     private String userName;
@@ -19,11 +20,12 @@ public class UserDog {
     public UserDog() {
 
     }
+
     public UserDog(Long chatId, String userName, String pet, LocalDate date) {
         this.userName = userName;
         this.chatId = chatId;
         this.pet = pet;
-        this.date=date;
+        this.date = date;
     }
 
     public String getUserName() {

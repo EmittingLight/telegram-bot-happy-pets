@@ -28,6 +28,7 @@ public class PictureController {
 
     /**
      * метод post принимает в качестве параметра фото и вызывает метод сервиса по сохранению переданного файла
+     *
      * @param chatId
      * @param picture
      * @param file
@@ -43,6 +44,7 @@ public class PictureController {
 
     /**
      * метод get -принимает в качестве параметра id и вызывает метод сервиса по извлечению из БД по id фото
+     *
      * @param id
      * @return
      */

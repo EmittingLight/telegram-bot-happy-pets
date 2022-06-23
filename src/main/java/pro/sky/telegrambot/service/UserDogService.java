@@ -119,6 +119,7 @@ public class UserDogService implements CatsDogsInterface {
                         " рекомендуем Вам прийти и познакомиться с ним вживую в нашем приюте." +
                         " А пока, давайте подготовимся к новому члену семьи. Что интересно?").replyMarkup(keyboardMarkupForStepTwo));
     }
+
     @Override
     public void stepThree(Update update) {
         telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),

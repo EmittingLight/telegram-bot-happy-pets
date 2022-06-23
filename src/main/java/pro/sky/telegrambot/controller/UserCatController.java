@@ -18,6 +18,7 @@ public class UserCatController {
     /**
      * метод post принимает в качестве параметра userCat и вызывает метод сервиса по созданию объекта userCat в БД
      * * @param userCat
+     *
      * @return
      */
     @PostMapping
@@ -27,6 +28,7 @@ public class UserCatController {
 
     /**
      * метод get принимает в качестве параметра id и вызывает метод сервиса по извлечению userCat из БД
+     *
      * @param id
      * @return
      */
@@ -37,6 +39,7 @@ public class UserCatController {
 
     /**
      * метод put принимает в качестве параметра userCat и вызывает метод сервиса по редактированию в БД
+     *
      * @param userCat
      * @return
      */

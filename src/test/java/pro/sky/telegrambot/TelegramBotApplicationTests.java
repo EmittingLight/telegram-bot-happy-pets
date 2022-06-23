@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -16,8 +15,6 @@ import pro.sky.telegrambot.model.UserCat;
 import pro.sky.telegrambot.model.UserDog;
 import pro.sky.telegrambot.repository.UserCatRepository;
 import pro.sky.telegrambot.repository.UserDogRepository;
-import pro.sky.telegrambot.service.UserCatService;
-import pro.sky.telegrambot.service.UserDogService;
 
 import java.util.Optional;
 
@@ -39,14 +36,6 @@ public class TelegramBotApplicationTests {
     private UserCatRepository userCatRepository;
     @MockBean
     private UserDogRepository userDogRepository;
-    //@MockBean
-    //private OwnerRepository ownerRepository;
-    @SpyBean
-    private UserCatService userCatService;
-    @SpyBean
-    private UserDogService userDogService;
-    //@SpyBean
-    // private OwnerService ownerService;
 
 
     @Test
